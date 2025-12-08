@@ -4,7 +4,7 @@ const path = require('path');
 // Android 프로젝트 경로 설정
 // 사용자가 실제 Android 프로젝트 경로로 수정해야 합니다
 const ANDROID_ASSETS_PATH = process.env.ANDROID_ASSETS_PATH || 
-  path.join(__dirname, '..', 'android', 'app', 'src', 'main', 'assets');
+  path.join(__dirname, '..', 'app', 'src', 'main', 'assets', 'dist');
 
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 

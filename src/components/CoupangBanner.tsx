@@ -4,7 +4,7 @@ import './CoupangBanner.css';
 
 const promoMessages = {
   ko: [
-    '도시를 더 깊게 알고 싶다면?',
+    '도시를 더 자세히 알고 싶다면?',
     '여행 준비 중이신가요?',
     '영어권 나라에 관심이 있다면?',
     '세계 도시를 좋아한다면?',
@@ -39,7 +39,7 @@ interface CoupangBannerProps {
  */
 export const CoupangBanner: React.FC<CoupangBannerProps> = ({
   productName = '추천 상품',
-  productUrl = 'https://www.coupang.com/',
+  productUrl = 'https://link.coupang.com/a/bcdefg',
   imageUrl,
 }) => {
   const { language } = useI18n();

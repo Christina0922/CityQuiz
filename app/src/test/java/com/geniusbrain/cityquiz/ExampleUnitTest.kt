@@ -1,4 +1,4 @@
-package com.temp.cityquiz
+package com.geniusbrain.cityquiz
 
 import org.junit.Test
 
@@ -15,3 +15,4 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 }
+

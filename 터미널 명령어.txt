@@ -1,0 +1,14 @@
+git add .
+git commit -m "update"
+git push
+
+
+REM 기존 dist 폴더 비우기
+del /q "app\src\main\assets\dist\*.*"
+del /q "app\src\main\assets\dist\assets\*.*"
+
+REM index.html 복사
+copy /Y "dist\index.html" "app\src\main\assets\dist\index.html"
+
+REM assets 폴더 전체 복사
+xcopy /Y /E /I "dist\assets" "app\src\main\assets\dist\assets"

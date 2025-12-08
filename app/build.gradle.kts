@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.cityquiz.mobile"
+    namespace = "com.geniusbrain.cityquiz"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.cityquiz.mobile"
+        applicationId = "com.geniusbrain.cityquiz"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

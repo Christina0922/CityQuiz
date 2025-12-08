@@ -1,4 +1,4 @@
-package com.temp.cityquiz.ui.theme
+package com.geniusbrain.cityquiz.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -56,3 +56,4 @@ fun CityQuizTheme(
         content = content
     )
 }
+

@@ -85,7 +85,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           </div>
 
           <button
-            className={`explanation-button ${canShowExplanation || isPremium ? '' : 'disabled'}`}
+            className={`explanation-button explain-btn ${canShowExplanation || isPremium ? '' : 'disabled'}`}
             onClick={onShowExplanation}
             disabled={!canShowExplanation && !isPremium}
           >

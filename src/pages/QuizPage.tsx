@@ -144,7 +144,7 @@ export const QuizPage: React.FC<QuizPageProps> = ({
         )}
 
         {showResult && (
-          <button className="next-button" onClick={handleNextQuestion}>
+          <button className="next-button next-btn" onClick={handleNextQuestion}>
             {t('button.nextQuestion')}
           </button>
         )}

@@ -124,24 +124,26 @@
   font-weight: bold;
 }
 
-.explanation-button {
+.explanation-button,
+.explain-btn {
   width: 100%;
   padding: 14px 20px;
   font-size: 16px;
   font-weight: 600;
-  border: 2px solid #667eea;
+  border: 2px solid #d0d0d0;
   border-radius: 8px;
-  background: #667eea;
-  color: white;
+  background: #f2f2f2;
+  color: #333;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.explanation-button:hover:not(:disabled) {
-  background: #5568d3;
-  border-color: #5568d3;
+.explanation-button:hover:not(:disabled),
+.explain-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+  border-color: #c0c0c0;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .explanation-button.disabled {
