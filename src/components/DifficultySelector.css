@@ -1,0 +1,64 @@
+.difficulty-selector {
+  margin-bottom: 24px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.difficulty-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 120px;
+}
+
+.difficulty-button:hover {
+  border-color: #667eea;
+  background: #f5f5ff;
+  transform: translateY(-2px);
+}
+
+.difficulty-button.active {
+  border-color: #667eea;
+  background: #667eea;
+  color: white;
+}
+
+.difficulty-button.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.difficulty-button.locked:hover {
+  border-color: #e0e0e0;
+  background: white;
+  transform: none;
+}
+
+.lock-icon {
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .difficulty-buttons {
+    flex-direction: column;
+  }
+
+  .difficulty-button {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
