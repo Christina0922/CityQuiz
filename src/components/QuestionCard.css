@@ -1,20 +1,30 @@
 .question-card {
   background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  border-radius: 2vmin;
+  padding: 1.5vh 2.5vmin 1.5vh 2.5vmin;
+  box-shadow: 0 0.2vmin 1vmin rgba(0, 0, 0, 0.1);
+  margin: 0 0 1.5vh 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  max-height: 50vh;
+  overflow-y: hidden;
 }
 
 .question-header {
-  margin-bottom: 16px;
+  margin-bottom: 0.8vh;
+  flex-shrink: 0;
+  height: 3vh;
+  max-height: 3vh;
 }
 
 .difficulty-badge {
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 0.6vmin 1.2vmin;
+  border-radius: 1vmin;
+  font-size: 1.8vmin;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -35,26 +45,38 @@
 }
 
 .question-text {
-  font-size: 22px;
+  font-size: 3.5vmin;
   font-weight: 600;
   color: #333;
-  margin: 0 0 20px 0;
+  margin: 0 0 1vh 0;
   line-height: 1.4;
+  height: 12vh;
+  max-height: 12vh;
+  overflow-y: hidden;
+  flex-shrink: 0;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
 }
 
 .options-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 1.5vh;
+  margin: 0;
+  height: 12.5vh;
+  max-height: 12.5vh;
+  flex-shrink: 0;
+  overflow-y: hidden;
+  box-sizing: border-box;
 }
 
 .option-button {
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 500;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 1.5vh 2vmin;
+  font-size: 5vmin;
+  font-weight: 700;
+  border: 0.3vmin solid #e0e0e0;
+  border-radius: 1.5vmin;
   background: white;
   color: #333;
   cursor: pointer;
@@ -63,7 +85,14 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
+  gap: 1.5vmin;
+  height: 5.5vh;
+  max-height: 5.5vh;
+  min-height: 5.5vh;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .option-text {
@@ -81,7 +110,7 @@
 .option-button:hover:not(:disabled) {
   border-color: #667eea;
   background: #f5f5ff;
-  transform: translateX(4px);
+  transform: translateX(0.5vmin);
 }
 
 .option-button.selected {
@@ -105,10 +134,10 @@
 }
 
 .option-indicator {
-  font-size: 22px;
+  font-size: 3vmin;
   font-weight: bold;
-  width: 22px;
-  height: 22px;
+  width: 3vmin;
+  height: 3vmin;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,23 +157,16 @@
 }
 
 .result-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  flex-shrink: 0;
+  display: none;
 }
 
 .explanation-button,
 .explain-btn {
-  width: 100%;
-  padding: 14px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  border: 2px solid #d0d0d0;
-  border-radius: 8px;
-  background: #f2f2f2;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.2s;
+  display: none;
 }
 
 .explanation-button:hover:not(:disabled),
@@ -164,16 +186,16 @@
 
 @media (max-width: 768px) {
   .question-card {
-    padding: 20px;
+    padding: 1.5vh 2.5vmin;
   }
 
   .question-text {
-    font-size: 20px;
+    font-size: 3.5vmin;
   }
 
   .option-button {
-    font-size: 16px;
-    padding: 14px 16px;
+    font-size: 5vmin;
+    padding: 1.5vh 2vmin;
   }
 
 }
