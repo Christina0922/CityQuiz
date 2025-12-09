@@ -24,6 +24,7 @@ export const QuizPage: React.FC<QuizPageProps> = ({
   const [showResult, setShowResult] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
   const [explanationText, setExplanationText] = useState('');
+  const [recentQuestionIds, setRecentQuestionIds] = useState<number[]>([]);
 
   const isPremium = getIsPremium();
   const dailyLimit = getDailyLimit();
@@ -32,12 +33,30 @@ export const QuizPage: React.FC<QuizPageProps> = ({
   // 현재 난이도에 맞는 문제 필터링
   const filteredQuestions = questions.filter((q) => q.difficulty === currentDifficulty);
 
-  // 새 문제 로드
+  // 새 문제 로드 (중복 방지)
   const loadNewQuestion = () => {
     if (filteredQuestions.length === 0) return;
 
-    const randomIndex = Math.floor(Math.random() * filteredQuestions.length);
-    const question = filteredQuestions[randomIndex];
+    // 최근에 나온 문제 제외
+    const availableQuestions = filteredQuestions.filter(
+      (q) => !recentQuestionIds.includes(q.id)
+    );
+
+    // 사용 가능한 문제가 없으면 최근 목록 초기화
+    const questionsToUse = availableQuestions.length > 0 
+      ? availableQuestions 
+      : filteredQuestions;
+
+    // 랜덤 선택
+    const randomIndex = Math.floor(Math.random() * questionsToUse.length);
+    const question = questionsToUse[randomIndex];
+    
+    // 최근 문제 목록 업데이트 (최대 5개 유지)
+    setRecentQuestionIds((prev) => {
+      const newList = [question.id, ...prev].slice(0, 5);
+      return newList;
+    });
+
     setCurrentQuestion(question);
     setSelectedIndex(null);
     setShowResult(false);
@@ -46,6 +65,8 @@ export const QuizPage: React.FC<QuizPageProps> = ({
   };
 
   useEffect(() => {
+    // 난이도 변경 시 최근 문제 목록 초기화
+    setRecentQuestionIds([]);
     loadNewQuestion();
   }, [currentDifficulty]);
 

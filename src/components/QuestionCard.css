@@ -38,15 +38,15 @@
   font-size: 22px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 24px 0;
-  line-height: 1.5;
+  margin: 0 0 20px 0;
+  line-height: 1.4;
 }
 
 .options-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .option-button {
@@ -60,6 +60,22 @@
   cursor: pointer;
   transition: all 0.2s;
   text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-button.selected-option {
+  opacity: 1;
+}
+
+.option-button.unselected-option {
+  opacity: 0.7;
 }
 
 .option-button:hover:not(:disabled) {
@@ -75,17 +91,36 @@
 }
 
 .option-button.correct {
-  border-color: #4caf50;
-  background: #e8f5e9;
-  color: #2e7d32;
-  font-weight: 600;
+  border-color: #2196f3;
+  background: white;
+  color: #333;
+  font-weight: 500;
 }
 
 .option-button.incorrect {
   border-color: #f44336;
-  background: #ffebee;
-  color: #c62828;
-  font-weight: 600;
+  background: white;
+  color: #333;
+  font-weight: 500;
+}
+
+.option-indicator {
+  font-size: 22px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.option-indicator.correct-indicator {
+  color: #2196f3;
+}
+
+.option-indicator.incorrect-indicator {
+  color: #f44336;
 }
 
 .option-button:disabled {
@@ -93,35 +128,9 @@
 }
 
 .result-section {
-  margin-top: 24px;
-  padding-top: 24px;
+  margin-top: 20px;
+  padding-top: 20px;
   border-top: 1px solid #e0e0e0;
-}
-
-.result-message {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.result-message.correct {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.result-message.incorrect {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.result-icon {
-  font-size: 24px;
-  font-weight: bold;
 }
 
 .explanation-button,
@@ -167,8 +176,5 @@
     padding: 14px 16px;
   }
 
-  .result-message {
-    font-size: 16px;
-  }
 }
 

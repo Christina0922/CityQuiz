@@ -24,7 +24,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 }) => {
   const { language, t } = useI18n();
   const correctIndex = question.correctIndex;
-  const isCorrect = selectedIndex !== null && selectedIndex === correctIndex;
 
   const getOptionClassName = (index: number): string => {
     if (!showResult) {
@@ -57,33 +56,31 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
       </h2>
 
       <div className="options-container">
-        {question.options.map((option, index) => (
-          <button
-            key={index}
-            className={getOptionClassName(index)}
-            onClick={() => !showResult && onAnswer(index)}
-            disabled={showResult}
-          >
-            {option}
-          </button>
-        ))}
+        {question.options.map((option, index) => {
+          const isCorrectOption = index === correctIndex;
+          const isSelectedWrong = showResult && index === selectedIndex && index !== correctIndex;
+          const showIndicator = showResult && (isCorrectOption || isSelectedWrong);
+          
+          return (
+            <button
+              key={index}
+              className={`${getOptionClassName(index)} ${showResult ? (index === selectedIndex ? 'selected-option' : 'unselected-option') : ''}`}
+              onClick={() => !showResult && onAnswer(index)}
+              disabled={showResult}
+            >
+              {showIndicator && (
+                <span className={`option-indicator ${isCorrectOption ? 'correct-indicator' : 'incorrect-indicator'}`}>
+                  {isCorrectOption ? '○' : '✗'}
+                </span>
+              )}
+              <span className="option-text">{option}</span>
+            </button>
+          );
+        })}
       </div>
 
       {showResult && (
         <div className="result-section">
-          <div className={`result-message ${isCorrect ? 'correct' : 'incorrect'}`}>
-            {isCorrect ? (
-              <span className="result-icon">✓</span>
-            ) : (
-              <span className="result-icon">✗</span>
-            )}
-            <span>
-              {isCorrect
-                ? t('msg.correct')
-                : `${t('msg.wrong')} ${t('msg.correctAnswerIs')} ${question.options[correctIndex]}`}
-            </span>
-          </div>
-
           <button
             className={`explanation-button explain-btn ${canShowExplanation || isPremium ? '' : 'disabled'}`}
             onClick={onShowExplanation}
