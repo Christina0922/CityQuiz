@@ -6,7 +6,7 @@ import { questions } from '../data/questions';
 import { getDailyLimit, incrementDailyAnswered, getIsPremium, updateStats } from '../utils/storage';
 import { QuestionCard } from '../components/QuestionCard';
 import { DifficultySelector } from '../components/DifficultySelector';
-import { AdBanner } from '../components/AdBanner';
+import { CoupangBoxes } from '../components/CoupangBoxes';
 import './QuizPage.css';
 
 interface QuizPageProps {
@@ -149,10 +149,8 @@ export const QuizPage: React.FC<QuizPageProps> = ({
           </button>
         )}
 
-        {/* 퀴즈 페이지 하단 광고 (프로모션 메시지 포함) */}
-        <div className="quiz-ad-section">
-          <AdBanner />
-        </div>
+        {/* 쿠팡 추천 박스 (한국 사용자만 표시) */}
+        <CoupangBoxes />
       </div>
     </div>
   );

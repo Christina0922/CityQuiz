@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "build:android": "npm run build && npm run copy:android",
-    "copy:android": "node scripts/copy-to-android.js"
+    "copy:android": "node scripts/copy-to-android.js",
+    "generate-icons": "node scripts/generate-app-icons.js"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -18,8 +19,8 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "sharp": "^0.33.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   }
 }
-

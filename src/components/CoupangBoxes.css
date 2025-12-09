@@ -1,0 +1,59 @@
+.coupang-boxes-wrap {
+  width: 100%;
+  max-width: 360px;
+  margin: 12px auto;
+  text-align: center;
+}
+
+.coupang-box {
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background: white;
+  border: 2px solid #ddd;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+}
+
+.coupang-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.coupang-box-brain {
+  border-color: #c9a2ff;
+}
+
+.coupang-box-world {
+  border-color: #8ec5ff;
+}
+
+.coupang-box-quiz {
+  border-color: #ffd37d;
+}
+
+.coupang-box-vibe {
+  border-color: #9ee8a1;
+}
+
+.coupang-box-accessory {
+  border-color: #ff9c9c;
+}
+
+@media (max-width: 768px) {
+  .coupang-boxes-wrap {
+    max-width: 100%;
+    padding: 0 12px;
+  }
+
+  .coupang-box {
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .coupang-partnership-notice {
+    font-size: 11px;
+  }
+}
+

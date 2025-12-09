@@ -1,10 +1,11 @@
 import React from 'react';
 import { useCountry } from '../hooks/useCountry';
 import { CoupangBanner } from './CoupangBanner';
+import { CoupangPromoMessages } from './CoupangPromoMessages';
 import { GlobalAdBanner, GoogleAdPlaceholder } from './GlobalAdBanner';
 
 interface AdBannerProps {
-  variant?: 'banner' | 'product-list' | 'google';
+  variant?: 'banner' | 'product-list' | 'google' | 'promo-messages';
   productName?: string;
   productUrl?: string;
   imageUrl?: string;
@@ -13,11 +14,11 @@ interface AdBannerProps {
 
 /**
  * 국가별로 다른 광고를 표시하는 통합 광고 배너 컴포넌트
- * - KR 사용자: 쿠팡 파트너스 배너
+ * - KR 사용자: 쿠팡 파트너스 배너 또는 프로모션 메시지
  * - 해외 사용자: 글로벌 광고 배너
  */
 export const AdBanner: React.FC<AdBannerProps> = ({
-  variant = 'banner',
+  variant = 'promo-messages',
   productName,
   productUrl,
   imageUrl,
@@ -32,6 +33,12 @@ export const AdBanner: React.FC<AdBannerProps> = ({
       // Google Ads는 한국에서도 사용 가능하지만, 쿠팡 우선
       return <CoupangBanner productName={productName} productUrl={productUrl} imageUrl={imageUrl} description={description} />;
     }
+    
+    // 프로모션 메시지 모드 (기본값)
+    if (variant === 'promo-messages' || variant === 'banner') {
+      return <CoupangPromoMessages />;
+    }
+    
     return (
       <CoupangBanner
         productName={productName}

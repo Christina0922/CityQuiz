@@ -1,0 +1,52 @@
+.coupang-promo-messages {
+  margin: 20px 0;
+  padding: 0;
+}
+
+.coupang-promo-message-item {
+  text-align: center;
+  cursor: pointer;
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.2s, transform 0.2s;
+  border-radius: 4px;
+}
+
+.coupang-promo-message-item:active {
+  transform: translateY(0);
+}
+
+.coupang-promo-message-item:hover {
+  color: #fa622f;
+  transform: translateY(-1px);
+}
+
+.coupang-promo-message-item:first-child {
+  margin-top: 0;
+}
+
+.coupang-partnership-notice {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+  line-height: 1.4;
+}
+
+@media (min-width: 481px) {
+  .coupang-partnership-notice {
+    font-size: 12px;
+  }
+}
+
+/* 모바일 최소 크기 보장 */
+@media (max-width: 480px) {
+  .coupang-partnership-notice {
+    font-size: 11px;
+  }
+}
+

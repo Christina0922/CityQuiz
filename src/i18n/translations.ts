@@ -42,7 +42,13 @@ type TranslationKey =
   | 'nav.quiz'
   | 'nav.stats'
   | 'nav.settings'
-  | 'coupang.label';
+  | 'coupang.label'
+  | 'coupang.box.brain'
+  | 'coupang.box.world'
+  | 'coupang.box.quiz'
+  | 'coupang.box.vibe'
+  | 'coupang.box.accessory'
+  | 'coupang.partnership';
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   ko: {
@@ -90,6 +96,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.stats': '통계',
     'nav.settings': '설정',
     'coupang.label': '쿠팡 파트너스',
+    'coupang.box.brain': '두뇌를 더 강하게!',
+    'coupang.box.world': '세계 도시를 더 잘 맞추고 싶다면?',
+    'coupang.box.quiz': '상식·퀴즈 실력 올리고 싶다면?',
+    'coupang.box.vibe': '도시 감성을 더 즐기고 싶다면?',
+    'coupang.box.accessory': '퀴즈가 더 편해지는 스마트 액세서리',
+    'coupang.partnership': '이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.',
   },
   en: {
     'app.title': 'City Quiz',
@@ -136,6 +148,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.stats': 'Stats',
     'nav.settings': 'Settings',
     'coupang.label': 'Coupang Partners',
+    'coupang.box.brain': 'Strengthen your brain!',
+    'coupang.box.world': 'Want to guess world cities better?',
+    'coupang.box.quiz': 'Want to improve your trivia skills?',
+    'coupang.box.vibe': 'Want to enjoy city vibes more?',
+    'coupang.box.accessory': 'Smart accessories for better quiz experience',
+    'coupang.partnership': 'This posting is part of Coupang Partners activity, and a certain amount of commission is provided accordingly.',
   },
 };
 

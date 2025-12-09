@@ -34,8 +34,17 @@ body {
   padding: 0 20px;
   display: flex;
   gap: 8px;
-  overflow-x: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+}
+
+.main-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.main-nav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .nav-button {

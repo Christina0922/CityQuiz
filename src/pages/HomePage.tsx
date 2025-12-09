@@ -1,7 +1,7 @@
 import React from 'react';
 import { useI18n } from '../contexts/I18nContext';
 import { getDailyLimit, getIsPremium } from '../utils/storage';
-import { AdBanner } from '../components/AdBanner';
+import { CoupangBoxes } from '../components/CoupangBoxes';
 import './HomePage.css';
 
 interface HomePageProps {
@@ -45,13 +45,8 @@ export const HomePage: React.FC<HomePageProps> = ({
           </button>
         </div>
 
-        {/* 국가별 광고 배너 (프로모션 메시지 포함) */}
-        <div className="home-ad-section">
-          <AdBanner
-            productName={t('ad.coupang.title')}
-            description={t('ad.coupang.description')}
-          />
-        </div>
+        {/* 쿠팡 추천 박스 (한국 사용자만 표시) */}
+        <CoupangBoxes />
       </div>
     </div>
   );
