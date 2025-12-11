@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { I18nProvider, useI18n } from './contexts/I18nContext';
-import { Header } from './components/Header';
+import Header from './components/Header';
 import { Footer } from './components/Footer';
-import { HomePage } from './pages/HomePage';
+import HomePage from './pages/HomePage';
 import { QuizPage } from './pages/QuizPage';
 import { StatsPage } from './pages/StatsPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -69,7 +69,7 @@ function AppContent() {
 
   return (
     <div className="app">
-      <Header currentPage={currentPage} />
+      <Header />
         <nav className="main-nav">
           <button
             className={`nav-button ${currentPage === 'home' ? 'active' : ''}`}

@@ -53,11 +53,11 @@ type TranslationKey =
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   ko: {
     'app.title': '도시 맞추기 퀴즈',
-    'app.subtitle': '전 세계에 있는 도시를 맞춰보는 두뇌 상식 게임',
+    'app.subtitle': '도시퀴즈',
     'button.startQuiz': '퀴즈 시작하기',
     'button.selectDifficulty': '난이도 선택 후 시작',
     'button.store': '스토어 / 프리미엄',
-    'button.showExplanation': '상세 해설 보기',
+    'button.showExplanation': '상세 설명 보기',
     'button.nextQuestion': '다음 문제',
     'button.premiumActivate': '프리미엄 활성화',
     'button.premiumDeactivate': '프리미엄 비활성화',

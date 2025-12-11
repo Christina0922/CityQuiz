@@ -1,31 +1,53 @@
 .difficulty-selector {
-  margin-bottom: 24px;
+  margin: 0;
+  padding: 0;
+  height: 3vh;
+  max-height: 3vh;
+  min-height: 3vh;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .difficulty-buttons {
   display: flex;
-  gap: 12px;
+  gap: 1vmin;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  height: 100%;
+  align-items: center;
+  width: 100%;
 }
 
 .difficulty-button {
-  padding: 12px 24px;
-  font-size: 16px;
+  padding: 0.5vh 1.8vmin;
+  font-size: 3vmin;
   font-weight: 600;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 0.2vmin solid #e0e0e0;
+  border-radius: 1vmin;
   background: white;
   color: #333;
   cursor: pointer;
   transition: all 0.2s;
-  min-width: 120px;
+  min-width: 0;
+  height: 2.5vh;
+  max-height: 2.5vh;
+  min-height: 2.5vh;
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .difficulty-button:hover {
   border-color: #667eea;
   background: #f5f5ff;
-  transform: translateY(-2px);
+  transform: translateY(-0.2vh);
 }
 
 .difficulty-button.active {
@@ -47,18 +69,17 @@
 }
 
 .lock-icon {
-  margin-left: 6px;
-  font-size: 14px;
+  margin-left: 0.5vmin;
+  font-size: 1.5vmin;
 }
 
 @media (max-width: 768px) {
   .difficulty-buttons {
-    flex-direction: column;
+    gap: 0.8vmin;
   }
 
   .difficulty-button {
-    width: 100%;
-    min-width: auto;
+    font-size: 2.7vmin;
+    padding: 0.5vh 1.5vmin;
   }
 }
-

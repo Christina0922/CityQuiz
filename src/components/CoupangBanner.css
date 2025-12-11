@@ -1,142 +1,23 @@
-.coupang-banner {
-  margin: 16px 0;
-  border: 2px solid #fa622f;
-  border-radius: 8px;
-  background: #fff;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
-.coupang-banner:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(250, 98, 47, 0.3);
-}
-
-.coupang-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  width: 100%;
-}
-
-.coupang-content {
+.coupang-banner-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 12px;
-  gap: 12px;
   width: 100%;
+  /* 🔥 누님 요청: 기존 위치에서 20% 더 아래로 */
+  margin-top: 20%;
 }
 
-.coupang-image {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  background: #f5f5f5;
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.coupang-banner-box {
+  background-color: #ffffff;
+  border: 2px solid #cce6ff;
+  border-radius: 10px;
 
-.coupang-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  /* 🔥 '퀴즈 시작하기' 버튼과 폭 맞추기 */
+  width: 90%;
+  max-width: 340px;
 
-.coupang-text {
-  flex: 1;
-  min-width: 0;
+  padding: 14px 0;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.coupang-label {
-  font-size: 11px;
-  color: #fa622f;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.coupang-title {
   font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 auto;
-  line-height: 1.4;
-  text-align: center !important;
-  width: 100%;
-  display: block;
+  font-weight: 500;
+  color: #000000;
 }
-
-.coupang-description {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.3;
-}
-
-.coupang-link-text {
-  font-size: 14px;
-  color: #fa622f;
-  font-weight: 600;
-  margin-top: 8px;
-  text-align: center;
-}
-
-.coupang-product-list {
-  margin: 24px 0;
-}
-
-.coupang-section-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 16px;
-  color: #333;
-}
-
-.coupang-products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-/* 이미지가 없을 때 텍스트만 가운데 정렬 */
-.coupang-content:not(:has(.coupang-image)) .coupang-text {
-  flex: none;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .coupang-products-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .coupang-content {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .coupang-text {
-    text-align: center;
-    width: 100%;
-  }
-  
-  .coupang-title {
-    text-align: center;
-    width: 100%;
-  }
-  
-  .coupang-image {
-    width: 100%;
-    height: 120px;
-  }
-}
-

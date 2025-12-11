@@ -82,6 +82,15 @@ export const QuizPage: React.FC<QuizPageProps> = ({
     if (!isPremium) {
       incrementDailyAnswered();
     }
+
+    // 틀렸을 때 자동으로 상세설명 표시
+    if (!isCorrect) {
+      const canShow = isPremium || currentQuestion!.difficulty === 'easy';
+      if (canShow && currentQuestion) {
+        setExplanationText(currentQuestion.explanation[language]);
+        setShowExplanation(true);
+      }
+    }
   };
 
   const handleShowExplanation = () => {
@@ -129,7 +138,7 @@ export const QuizPage: React.FC<QuizPageProps> = ({
 
   return (
     <div className="quiz-page">
-      <div className="quiz-content">
+      <div className="quiz-content quiz-screen">
         <div className="quiz-header">
           <DifficultySelector
             currentDifficulty={currentDifficulty}
@@ -159,13 +168,13 @@ export const QuizPage: React.FC<QuizPageProps> = ({
 
         {showExplanation && explanationText && (
           <div className="explanation-box">
-            <h3>{t('button.showExplanation')}</h3>
+            <h3>상세 설명 보기</h3>
             <p>{explanationText}</p>
           </div>
         )}
 
         {showResult && (
-          <button className="next-button next-btn" onClick={handleNextQuestion}>
+          <button className="next-button" onClick={handleNextQuestion}>
             {t('button.nextQuestion')}
           </button>
         )}

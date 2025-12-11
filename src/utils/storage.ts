@@ -7,6 +7,8 @@ const STORAGE_KEYS = {
   LANGUAGE: 'cityQuiz_language',
   COUNTRY_CODE: 'cityQuiz_countryCode',
   IS_DEVELOPER: 'cityQuiz_isDeveloper',
+  LAST_MESSAGE: 'cityQuiz_lastMessage',
+  LAST_MESSAGE_TIME: 'cityQuiz_lastMessageTime',
 } as const;
 
 export interface Stats {
@@ -179,6 +181,43 @@ export function saveLanguage(lang: 'ko' | 'en'): void {
     localStorage.setItem(STORAGE_KEYS.LANGUAGE, lang);
   } catch (error) {
     console.warn('Failed to save language:', error);
+  }
+}
+
+// Promo Message 관련
+export function getLastMessage(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_KEYS.LAST_MESSAGE);
+  } catch {
+    return null;
+  }
+}
+
+export function saveLastMessage(message: string): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.LAST_MESSAGE, message);
+  } catch (error) {
+    console.warn('Failed to save last message:', error);
+  }
+}
+
+export function getLastMessageTime(): number | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEYS.LAST_MESSAGE_TIME);
+    if (stored) {
+      return parseInt(stored, 10);
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+export function saveLastMessageTime(timestamp: number): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.LAST_MESSAGE_TIME, String(timestamp));
+  } catch (error) {
+    console.warn('Failed to save last message time:', error);
   }
 }
 

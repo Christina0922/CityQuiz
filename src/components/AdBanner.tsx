@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCountry } from '../hooks/useCountry';
-import { CoupangBanner } from './CoupangBanner';
+import CoupangBanner from './CoupangBanner';
 import { CoupangPromoMessages } from './CoupangPromoMessages';
 import { GlobalAdBanner, GoogleAdPlaceholder } from './GlobalAdBanner';
 
@@ -20,8 +20,8 @@ interface AdBannerProps {
 export const AdBanner: React.FC<AdBannerProps> = ({
   variant = 'promo-messages',
   productName,
-  productUrl,
-  imageUrl,
+  productUrl: _productUrl,
+  imageUrl: _imageUrl,
   description,
 }) => {
   const { isKR, isLoading } = useCountry();
@@ -31,7 +31,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
   if (isLoading || isKR) {
     if (variant === 'google') {
       // Google Ads는 한국에서도 사용 가능하지만, 쿠팡 우선
-      return <CoupangBanner productName={productName} productUrl={productUrl} imageUrl={imageUrl} description={description} />;
+      return <CoupangBanner text={description || productName} />;
     }
     
     // 프로모션 메시지 모드 (기본값)
@@ -41,10 +41,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     
     return (
       <CoupangBanner
-        productName={productName}
-        productUrl={productUrl}
-        imageUrl={imageUrl}
-        description={description}
+        text={description || productName}
       />
     );
   }

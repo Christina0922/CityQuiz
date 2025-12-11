@@ -2,7 +2,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 32px 20px;
+  padding: 17.25vh 2.5vw;
+  box-sizing: border-box;
 }
 
 .home-content {
@@ -13,63 +14,70 @@
 
 .home-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 1.15vh;
 }
 
 .home-title {
   font-size: 32px;
   font-weight: bold;
   color: #333;
-  margin: 0 0 12px 0;
+  margin: 0 0 0.575vh 0;
 }
 
 .home-subtitle {
-  font-size: 18px;
-  color: #666;
+  font-size: 36px;
+  font-weight: 700;
+  color: #333;
   margin: 0;
   line-height: 1.6;
 }
 
 .daily-info {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 1vh;
 }
 
 .premium-badge {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 0.8vh 1.5vw;
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 2vmin;
   font-weight: 600;
 }
 
 .remaining-info {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 0.8vh 1.5vw;
   background: #e3f2fd;
   color: #1976d2;
   border-radius: 20px;
-  font-size: 16px;
+  font-size: 2vmin;
   font-weight: 600;
 }
 
 .home-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh;
+  margin-bottom: 0;
 }
 
 .home-button {
-  padding: 16px 24px;
-  font-size: 18px;
+  width: 80%;
+  max-width: 320px;
+  padding: 1.2rem 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .home-button.primary {
@@ -95,8 +103,11 @@
 }
 
 .home-ad-section {
-  margin-top: 32px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
 }
+
 
 @media (max-width: 768px) {
   .home-title {
@@ -108,8 +119,27 @@
   }
 
   .home-button {
-    font-size: 16px;
-    padding: 14px 20px;
+    font-size: 1.1rem;
+    padding: 1.2rem 1rem;
   }
+
+  .home-subtitle {
+    font-size: 32px;
+  }
+}
+
+.home-start-button,
+.home-difficulty-button {
+  height: 7vh !important;
+  min-height: 7vh !important;
+  max-height: 7vh !important;
+  border-radius: 12px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 

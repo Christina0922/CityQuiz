@@ -25,24 +25,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   const { language, t } = useI18n();
   const correctIndex = question.correctIndex;
 
-  const getOptionClassName = (index: number): string => {
-    if (!showResult) {
-      return `option-button ${selectedIndex === index ? 'selected' : ''}`;
-    }
-
-    if (index === correctIndex) {
-      return 'option-button correct';
-    }
-
-    if (index === selectedIndex && index !== correctIndex) {
-      return 'option-button incorrect';
-    }
-
-    return 'option-button';
-  };
-
   return (
     <div className="question-card">
+      {/* 난이도 배지 */}
       <div className="question-header">
         <span className={`difficulty-badge difficulty-${question.difficulty}`}>
           {question.difficulty === 'easy' && t('difficulty.easy')}
@@ -51,46 +36,70 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         </span>
       </div>
 
+      {/* 문제 문구 */}
       <h2 className="question-text">
         {question.questionText[language]}
       </h2>
 
+      {/* 보기 목록 */}
       <div className="options-container">
         {question.options.map((option, index) => {
-          const isCorrectOption = index === correctIndex;
-          const isSelectedWrong = showResult && index === selectedIndex && index !== correctIndex;
-          const showIndicator = showResult && (isCorrectOption || isSelectedWrong);
-          
+          const isCorrect = index === correctIndex;
+          const isSelected = index === selectedIndex;
+
+          const showIcon =
+            showResult && (isCorrect || (isSelected && !isCorrect));
+
+          const optionClass = showResult
+            ? isCorrect
+              ? 'correct'
+              : isSelected
+              ? 'incorrect'
+              : ''
+            : isSelected
+            ? 'selected'
+            : '';
+
           return (
             <button
               key={index}
-              className={`${getOptionClassName(index)} ${showResult ? (index === selectedIndex ? 'selected-option' : 'unselected-option') : ''}`}
-              onClick={() => !showResult && onAnswer(index)}
+              className={`answer-option ${optionClass}`}
               disabled={showResult}
+              onClick={() => !showResult && onAnswer(index)}
             >
-              {showIndicator && (
-                <span className={`option-indicator ${isCorrectOption ? 'correct-indicator' : 'incorrect-indicator'}`}>
-                  {isCorrectOption ? '○' : '✗'}
+              <span className="answer-label">{option}</span>
+
+              {showIcon && (
+                <span
+                  className={`answer-icon ${
+                    isCorrect ? 'correct-indicator' : 'incorrect-indicator'
+                  }`}
+                >
+                  {isCorrect ? '⭕' : '❌'}
                 </span>
               )}
-              <span className="option-text">{option}</span>
             </button>
           );
         })}
       </div>
 
+      {/* 상세 해설 버튼 (정답 공개 후, 해설이 있을 때만) */}
       {showResult && (
-        <div className="result-section">
+        <div className="explanation-button-wrapper">
           <button
-            className={`explanation-button explain-btn ${canShowExplanation || isPremium ? '' : 'disabled'}`}
+            type="button"
+            className="explanation-button"
             onClick={onShowExplanation}
-            disabled={!canShowExplanation && !isPremium}
+            disabled={!canShowExplanation}
           >
-            {t('button.showExplanation')}
+            {canShowExplanation
+              ? '상세 설명 보기'
+              : isPremium
+              ? t('quiz.noExplanation') || '해설이 준비되지 않았습니다.'
+              : t('quiz.premiumOnly') || '프리미엄 전용 해설입니다.'}
           </button>
         </div>
       )}
     </div>
   );
 };
-

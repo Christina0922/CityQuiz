@@ -1,51 +1,89 @@
 .quiz-page {
   height: 100vh;
+  max-height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .quiz-content {
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;                 /* ← 고정 높이 제거 */
+  max-height: none;             /* ← 최대 높이 제한 삭제 */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
-  padding: 1.5vh 2.5vmin;
+  padding: 0.5vh 2.5vmin;
   box-sizing: border-box;
-  overflow-y: hidden;
+  overflow: hidden;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.quiz-content.quiz-screen {
+  min-height: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1vh;
+  padding-top: 15vh;
+  padding-bottom: 15vh;
+  padding-left: 2.5vw;
+  padding-right: 2.5vw;
+  overflow: hidden;
 }
 
 .quiz-header {
   flex-shrink: 0;
-  margin-bottom: 1vh;
+  height: 4vh;
+  max-height: 4vh;
+  min-height: 4vh;
+  margin: 0 0 0.3vh 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .quiz-info {
   text-align: center;
-  margin-top: 1vh;
+  margin: 0;
+  padding: 0;
+  height: 1.5vh;
+  max-height: 1.5vh;
+  min-height: 1.5vh;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .premium-badge {
   display: inline-block;
-  padding: 0.8vmin 2vmin;
+  padding: 0.5vmin 1.5vmin;
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
-  border-radius: 2vmin;
-  font-size: 2.5vmin;
+  border-radius: 1.5vmin;
+  font-size: 2vmin;
   font-weight: 600;
 }
 
 .remaining-info {
   display: inline-block;
-  padding: 0.8vmin 2vmin;
+  padding: 0.5vmin 1.5vmin;
   background: #e3f2fd;
   color: #1976d2;
-  border-radius: 2vmin;
-  font-size: 2.5vmin;
+  border-radius: 1.5vmin;
+  font-size: 2vmin;
   font-weight: 600;
 }
 
@@ -53,11 +91,13 @@
   background: #f5f5f5;
   border-left: 0.5vmin solid #667eea;
   border-radius: 1.5vmin;
-  padding: 1.5vh 2.5vmin;
-  margin: 0;
-  height: 15vh;
-  max-height: 15vh;
-  overflow-y: hidden;
+  padding: 1vh 2.5vmin;
+  margin-top: 1vh;
+  margin-bottom: 0;
+  height: auto;
+  max-height: 20vh;
+  min-height: auto;
+  overflow-y: auto;
   flex-shrink: 0;
   box-sizing: border-box;
   display: flex;
@@ -65,43 +105,122 @@
 }
 
 .explanation-box h3 {
-  font-size: 2.5vmin;
+  font-size: 3.75vmin;
   font-weight: 600;
   color: #333;
-  margin: 0 0 0.8vh 0;
+  margin: 0 0 0.5vh 0;
+  padding: 0;
   flex-shrink: 0;
+  height: 2.5vh;
+  max-height: 2.5vh;
+  min-height: 2.5vh;
 }
 
 .explanation-box p {
-  font-size: 2.2vmin;
+  font-size: 3.3vmin;
   color: #555;
   line-height: 1.4;
   margin: 0;
-  overflow-y: hidden;
+  padding: 0;
+  overflow: hidden;
   flex: 1;
   word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
 }
 
-.next-button,
-.next-btn {
+/* 선택지 박스 높이 70%로 줄이기 (7vh) */
+.quiz-content .answer-option {
+  height: 7vh !important;
+  min-height: 7vh !important;
+  max-height: 7vh !important;
+  position: relative !important;
+}
+
+/* OX 마크를 오른쪽 끝에 오버레이로 표시 */
+.quiz-content .answer-mark {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.6rem;
+  z-index: 10;
+}
+
+.quiz-content .answer-mark.correct {
+  color: #2196f3;
+}
+
+.quiz-content .answer-mark.incorrect {
+  color: #f44336;
+}
+
+/* answer-icon도 동일하게 처리 */
+.quiz-content .answer-icon {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 1.6rem !important;
+  z-index: 10 !important;
+  margin-left: 0 !important;
+}
+
+.quiz-content .answer-icon.correct-indicator {
+  color: #2196f3 !important;
+}
+
+.quiz-content .answer-icon.incorrect-indicator {
+  color: #f44336 !important;
+}
+
+/* 보기(도시명) 폰트 2배 + 굵게 */
+.quiz-content .answer-label {
+  font-size: 5.6vmin !important;
+  font-weight: bold !important;
+}
+
+.next-button {
   width: 100%;
-  height: 8vh;
-  max-height: 8vh;
-  padding: 0;
-  font-size: 3vmin;
+  height: 7vh;
+  font-size: 1.8rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0 !important;     /* ← ★ 필수 수정 */
+  padding: 0;
   border: none;
   border-radius: 1.5vmin;
   background: #4b7bff;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
-  margin: 0;
-  flex-shrink: 0;
+  flex: 0 0 7vh;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+.next-btn {
+  width: 100%;
+  height: 7vh;
+  font-size: 1.8rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 0 !important;     /* ← ★ 필수 수정 */
+  padding: 0;
+  border: none;
+  border-radius: 1.5vmin;
+  background: #4b7bff;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 0 0 7vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .next-button:hover,
@@ -144,7 +263,36 @@
 
 @media (max-width: 768px) {
   .quiz-content {
-    padding: 1.5vh 2.5vmin;
+    padding: 0;
   }
 }
 
+/* ============================================
+   추가 규칙 (append 방식)
+   ============================================ */
+
+.next-button, .next-btn {
+  margin-top: 0 !important;
+  height: 7vh !important;
+  flex: 0 0 7vh !important;
+  font-size: 1.8rem !important;
+}
+
+.quiz-content {
+  min-height: 100vh !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+.quiz-ad-section {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 난이도 박스 강조 */
+.quiz-content .difficulty-badge {
+  font-size: 1.5em !important;
+  padding: 0.4em 1em !important;
+  border-radius: 12px !important;
+  background: #eef2ff !important;
+}

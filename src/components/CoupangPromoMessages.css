@@ -50,3 +50,16 @@
   }
 }
 
+/* ============================================
+   추가 규칙 (append 방식)
+   ============================================ */
+
+.coupang-promo-messages {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.promo-message-box {
+  margin: 0 !important;
+  padding: 8px 12px !important;
+}
