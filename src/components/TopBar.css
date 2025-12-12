@@ -1,0 +1,45 @@
+/* src/components/TopBar.css */
+.topbar {
+  height: 72px;
+  background: #3f6fb6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.topbar__title {
+  color: #fff;
+  font-weight: 900;
+  font-size: 34px;
+  letter-spacing: 1px;
+}
+
+.topbar__lang {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar__langBtn {
+  background: #fff;
+  border: 2px solid #2f5ea6;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 700;
+}
+
+.topbar__langLink {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 18px;
+  padding: 6px 10px;
+}
+
+.topbar__divider {
+  width: 2px;
+  height: 26px;
+  background: #ffffffaa;
+}

@@ -1,75 +1,126 @@
-.app-header {
+.header-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 28px 20px 16px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  height: 56px;
+  padding: 0 12px;
+  overflow: hidden;
+  gap: 12px;
 }
 
 .header-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
-  margin: 0;
-  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.header-actions {
+.header-nav {
   display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.language-toggle {
-  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  padding: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  flex: 1;
+  justify-content: center;
 }
 
-.lang-button {
-  background: transparent;
-  border: none;
-  color: white;
+.nav-btn {
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 500;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
-.lang-button:hover {
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.nav-btn.active {
   background: rgba(255, 255, 255, 0.2);
-}
-
-.lang-button.active {
-  background: white;
-  color: #667eea;
+  color: white;
   font-weight: 600;
 }
 
-.lang-separator {
-  color: rgba(255, 255, 255, 0.5);
+.header-lang {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  padding: 4px 8px;
   font-size: 14px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
+.lang-btn.active {
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+}
+
+.lang-sep {
+  opacity: 0.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lang-text {
+  color: white;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .header-bar {
+    padding: 0 8px;
+    gap: 8px;
+  }
+
   .header-title {
-    font-size: 20px;
+    font-size: 18px;
   }
-  
-  .lang-button {
-    padding: 5px 10px;
-    font-size: 13px;
+
+  .nav-btn {
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  .lang-btn {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+
+  .lang-text {
+    font-size: 12px;
+  }
+
+  .lang-sep {
+    font-size: 12px;
   }
 }
-
