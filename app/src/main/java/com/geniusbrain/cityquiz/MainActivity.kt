@@ -87,18 +87,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                // 외부 http 링크는 외부 브라우저에서 열기
+                // 모든 외부 http/https 링크는 외부 브라우저에서 열기
                 if (url.startsWith("http://") || url.startsWith("https://")) {
-                    if (url.contains("coupang.com") || url.contains("link.coupang.com")) {
-                        try {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                            return true
-                        } catch (e: Exception) {
-                            Log.e("WebView", "External link open failed: ${e.message}")
-                            return false
-                        }
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        Log.d("WebView", "Opening external URL: $url")
+                        return true
+                    } catch (e: Exception) {
+                        Log.e("WebView", "External link open failed: ${e.message}")
+                        return false
                     }
                 }
 

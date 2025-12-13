@@ -11,6 +11,8 @@
   padding: 0 12px;
   overflow: hidden;
   gap: 12px;
+  position: relative;
+  z-index: 100;
 }
 
 .header-title {
@@ -69,16 +71,24 @@
   padding: 4px 8px;
   font-size: 14px;
   border: 0;
-  background: rgba(255, 255, 255, 0.18);
-  color: white;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
   border-radius: 10px;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .lang-btn.active {
   background: rgba(255, 255, 255, 0.25);
+  color: white;
   font-weight: 600;
 }
 
@@ -88,18 +98,11 @@
   flex-shrink: 0;
 }
 
-.lang-text {
-  color: white;
-  font-size: 14px;
-  white-space: nowrap;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
 @media (max-width: 480px) {
   .header-bar {
     padding: 0 8px;
     gap: 8px;
+    height: 56px;
   }
 
   .header-title {
@@ -114,10 +117,6 @@
   .lang-btn {
     font-size: 12px;
     padding: 3px 6px;
-  }
-
-  .lang-text {
-    font-size: 12px;
   }
 
   .lang-sep {

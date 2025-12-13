@@ -28,7 +28,7 @@ export default function HomePage({
       </div>
 
       <button type="button" className="home__primary" onClick={onStartQuiz}>
-        퀴즈 시작하기
+        {lang === "ko" ? "퀴즈 시작하기" : "Start Quiz"}
       </button>
 
       <button
@@ -36,19 +36,8 @@ export default function HomePage({
         className="home__secondary"
         onClick={onGoPickDifficulty}
       >
-        난이도 선택 후 시작
+        {lang === "ko" ? "난이도 선택 후 시작" : "Select Difficulty"}
       </button>
-
-      {/* 쿠팡 광고 영역 */}
-      <div className="home__coupang">
-        <button type="button" className="home__coupangBtn">
-          도시를 더 많이 알고 싶다면?
-        </button>
-        <div className="home__coupangText">
-          이 포스팅은 쿠팡 파트너스 활동의 일환으로,
-          이에 따른 일정액의 수수료를 제공받습니다.
-        </div>
-      </div>
 
       {/* 난이도 값은 내부 상태로 유지 중 */}
       <span className="srOnly">현재난이도:{difficulty}</span>

@@ -62,25 +62,26 @@ export default function QuizPage({
 
   const prompt = lang === "ko" ? q.promptKo : q.promptEn;
   const choices = lang === "ko" ? q.choicesKo : q.choicesEn;
+  const explainText = lang === "ko" ? q.explanationKo : q.explanationEn;
 
   const pick = (choiceIndex: number) => {
     if (state.kind !== "idle") return;
 
     if (choiceIndex === q.correctIndex) {
       setState({ kind: "correct", pickedIndex: choiceIndex });
+      setShowExplain(true);
       window.setTimeout(() => {
         setIdx((v) => v + 1);
       }, 700);
     } else {
       setState({ kind: "wrong", pickedIndex: choiceIndex });
+      setShowExplain(true);
     }
   };
 
   const onNext = () => {
     setIdx((v) => v + 1);
   };
-
-  const explainText = lang === "ko" ? q.explanationKo : q.explanationEn;
 
   return (
     <div className="quiz">
@@ -159,86 +160,24 @@ export default function QuizPage({
         })}
       </div>
 
-      {/* 오답일 때만 아래 2버튼 표시 */}
+      {/* 오답일 때만 다음 문제 버튼 표시 */}
       {state.kind === "wrong" ? (
-        <div className="quiz__actions">
+        <div className={`quiz__actions ${showExplain ? 'with-explanation' : ''}`}>
           <button type="button" className="act actNext" onClick={onNext}>
-            {lang === "ko" ? (
-              <>
-                다음
-                <br />
-                문제
-              </>
-            ) : (
-              <>
-                Next
-                <br />
-                Question
-              </>
-            )}
-          </button>
-
-          <button
-            type="button"
-            className="act actExplain"
-            onClick={() => setShowExplain(true)}
-          >
-            {lang === "ko" ? (
-              <>
-                상세 설명
-                <br />
-                보기
-              </>
-            ) : (
-              <>
-                Show
-                <br />
-                Explanation
-              </>
-            )}
+            {lang === "ko" ? "다음 문제" : "Next Question"}
           </button>
         </div>
       ) : null}
 
-      {/* 상세 설명 모달 */}
-      {showExplain ? (
-        <div className="modalBack" onClick={() => setShowExplain(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal__title">{lang === "ko" ? "상세 설명" : "Explanation"}</div>
-            <div className="modal__body">{explainText}</div>
-            <button
-              type="button"
-              className="modal__close"
-              onClick={() => setShowExplain(false)}
-            >
-              {lang === "ko" ? "닫기" : "Close"}
-            </button>
+      {/* 상세 설명 영역 (인라인) */}
+      {showExplain && (state.kind === "correct" || state.kind === "wrong") ? (
+        <div className="quiz__explanation">
+          <div className="quiz__explanation-title">
+            {lang === "ko" ? "상세 설명" : "Explanation"}
           </div>
+          <div className="quiz__explanation-text">{explainText}</div>
         </div>
       ) : null}
-
-      {/* 쿠팡 배너 */}
-      <div style={{ padding: '0 18px', marginTop: '20px' }}>
-        <div style={{ 
-          background: '#f5f5f5', 
-          border: '1px solid #ddd', 
-          borderRadius: '8px', 
-          padding: '14px', 
-          textAlign: 'center',
-          marginBottom: '8px'
-        }}>
-          {lang === "ko" ? "도시를 더 많이 알고 싶다면?" : "Want to know more cities?"}
-        </div>
-        <div style={{ 
-          fontSize: '12px', 
-          color: '#666', 
-          textAlign: 'center' 
-        }}>
-          {lang === "ko" 
-            ? "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다."
-            : "This posting is part of Coupang Partners activity, and a certain amount of commission is provided accordingly."}
-        </div>
-      </div>
     </div>
   );
 }

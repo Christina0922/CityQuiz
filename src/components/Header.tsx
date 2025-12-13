@@ -13,9 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   console.log("HEADER ONE-LINE VERSION 2025-12-12");
 
   const handleChangeLanguage = (lang: 'ko' | 'en') => {
-    if (language !== lang) {
-      setLanguage(lang);
-    }
+    setLanguage(lang);
   };
 
   return (
@@ -45,18 +43,20 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
       <div className="header-lang">
         <button 
-          className={language === 'ko' ? 'lang-btn active' : 'lang-btn'}
+          className={`lang-btn ${language === 'ko' ? 'active' : ''}`}
           onClick={() => handleChangeLanguage('ko')}
+          aria-label="한국어"
         >
           한국어
         </button>
         <span className="lang-sep">|</span>
-        <span 
-          className="lang-text"
+        <button 
+          className={`lang-btn ${language === 'en' ? 'active' : ''}`}
           onClick={() => handleChangeLanguage('en')}
+          aria-label="English"
         >
           English
-        </span>
+        </button>
       </div>
     </header>
   );

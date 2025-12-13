@@ -1,11 +1,11 @@
 /* src/pages/HomePage.css */
 .home {
-  padding: 22px 18px;
+  padding: 22px 18px 100px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  min-height: calc(100vh - 72px - 52px);
+  min-height: calc(100vh - 56px);
   justify-content: flex-start;
 }
 
@@ -62,46 +62,6 @@
   transform: translateY(-2px);
 }
 
-/* 쿠팡 광고 영역 */
-.home__coupang {
-  margin-top: auto;
-  padding-top: 40px;
-  padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.home__coupangBtn {
-  width: 78%;
-  max-width: 320px;
-  background: #fff;
-  border: 2px solid #2f5ea6;
-  color: #0b55ff;
-  border-radius: 12px;
-  padding: 14px 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-}
-
-.home__coupangBtn:hover {
-  background: #f5f5ff;
-}
-
-.home__coupangText {
-  width: 78%;
-  max-width: 320px;
-  font-size: 11px;
-  color: #666;
-  text-align: center;
-  line-height: 1.5;
-  word-wrap: break-word;
-}
-
 .srOnly {
   position: absolute;
   left: -9999px;
@@ -110,7 +70,7 @@
 
 @media (max-width: 768px) {
   .home {
-    padding: 20px 16px;
+    padding: 20px 16px 100px;
   }
 
   .home__line {
@@ -125,14 +85,5 @@
   .home__secondary {
     font-size: 20px;
     padding: 12px 10px;
-  }
-
-  .home__coupangBtn {
-    font-size: 14px;
-    padding: 12px 10px;
-  }
-
-  .home__coupangText {
-    font-size: 10px;
   }
 }
