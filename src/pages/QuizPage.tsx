@@ -12,8 +12,18 @@ type Props = {
 
 type AnswerState =
   | { kind: "idle" }
-  | { kind: "correct"; pickedIndex: number }
-  | { kind: "wrong"; pickedIndex: number };
+  | { kind: "correct"; pickedOptionId: string }
+  | { kind: "wrong"; pickedOptionId: string };
+
+// Fisher-Yates 셔플 알고리즘
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 export default function QuizPage({
   lang,
@@ -31,9 +41,25 @@ export default function QuizPage({
   }, [questionsByDifficulty, difficulty]);
 
   // 현재 문제
-  const q = useMemo(() => {
+  const currentQ = useMemo(() => {
     if (currentQuestions.length === 0) return null;
-    return currentQuestions[idx % currentQuestions.length];
+    const baseQ = currentQuestions[idx % currentQuestions.length];
+    
+    // 안전장치 검사
+    if (baseQ.options.length !== 3 || baseQ.optionsEn.length !== 3) {
+      return null;
+    }
+    
+    const optionIds = baseQ.options.map(opt => opt.id);
+    if (new Set(optionIds).size !== 3) {
+      return null; // ID 중복
+    }
+    
+    if (baseQ.options.filter(opt => opt.id === baseQ.correctOptionId).length !== 1) {
+      return null; // correctOptionId가 options에 정확히 1개 존재하지 않음
+    }
+    
+    return baseQ;
   }, [currentQuestions, idx]);
 
   // 난이도 변경 시 문제 인덱스 리셋
@@ -44,13 +70,17 @@ export default function QuizPage({
   }, [difficulty]);
 
   useEffect(() => {
-    if (q) {
+    if (currentQ) {
       setState({ kind: "idle" });
       setShowExplain(false);
+    } else {
+      // 안전장치 실패 시 다음 문제로
+      setIdx((v) => v + 1);
     }
-  }, [q?.id]);
+  }, [currentQ?.id]);
 
-  if (!q) {
+  // 안전장치 실패로 문제가 없으면 다음 문제로
+  if (!currentQ) {
     return (
       <div className="quiz">
         <div style={{ padding: "20px", textAlign: "center" }}>
@@ -60,21 +90,37 @@ export default function QuizPage({
     );
   }
 
-  const prompt = lang === "ko" ? q.promptKo : q.promptEn;
-  const choices = lang === "ko" ? q.choicesKo : q.choicesEn;
-  const explainText = lang === "ko" ? q.explanationKo : q.explanationEn;
+  const prompt = lang === "ko" ? currentQ.promptKo : currentQ.promptEn;
+  const explainText = lang === "ko" ? currentQ.explanationKo : currentQ.explanationEn;
+  
+  // 문제 출제 시점에 한 번만 셔플된 옵션 생성 (문제가 바뀔 때만 셔플, 답 체크 후에는 순서 절대 유지)
+  const shuffledOptions = useMemo(() => {
+    const baseOptions = lang === "ko" ? currentQ.options : currentQ.optionsEn;
+    return shuffleArray(baseOptions);
+  }, [currentQ.id]); // currentQ.id가 바뀔 때만 셔플 (lang 변경 시에는 순서 유지)
+  
+  // 언어에 따라 표시할 label 선택 (셔플된 순서는 유지)
+  const displayOptions = useMemo(() => {
+    return shuffledOptions.map(option => {
+      const baseOption = lang === "ko" 
+        ? currentQ.options.find(opt => opt.id === option.id)
+        : currentQ.optionsEn.find(opt => opt.id === option.id);
+      return baseOption || option;
+    });
+  }, [shuffledOptions, lang, currentQ.options, currentQ.optionsEn]);
 
-  const pick = (choiceIndex: number) => {
+  const pick = (selectedOptionId: string) => {
     if (state.kind !== "idle") return;
 
-    if (choiceIndex === q.correctIndex) {
-      setState({ kind: "correct", pickedIndex: choiceIndex });
+    // id 기반 채점
+    if (selectedOptionId === currentQ.correctOptionId) {
+      setState({ kind: "correct", pickedOptionId: selectedOptionId });
       setShowExplain(true);
       window.setTimeout(() => {
         setIdx((v) => v + 1);
       }, 700);
     } else {
-      setState({ kind: "wrong", pickedIndex: choiceIndex });
+      setState({ kind: "wrong", pickedOptionId: selectedOptionId });
       setShowExplain(true);
     }
   };
@@ -88,70 +134,72 @@ export default function QuizPage({
       {/* 난이도 바 */}
       <div className="diffBar">
         <div className="diffBar__label">{lang === "ko" ? "난이도" : "Difficulty"}</div>
+        <div className="diffBar__circles">
+          <button
+            type="button"
+            className="diffBar__circleBtn"
+            onClick={() => onChangeDifficulty("high")}
+            aria-label={lang === "ko" ? "난이도 상" : "Hard"}
+          >
+            <span
+              className={`diffBar__circle ${
+                difficulty === "high" ? "diffBar__circle--high filled" : "diffBar__circle--high"
+              }`}
+            />
+          </button>
 
-        <button
-          type="button"
-          className="diffBar__circleBtn"
-          onClick={() => onChangeDifficulty("high")}
-          aria-label={lang === "ko" ? "난이도 상" : "Hard"}
-        >
-          <span
-            className={`diffBar__circle ${
-              difficulty === "high" ? "diffBar__circle--high filled" : "diffBar__circle--high"
-            }`}
-          />
-        </button>
+          <button
+            type="button"
+            className="diffBar__circleBtn"
+            onClick={() => onChangeDifficulty("mid")}
+            aria-label={lang === "ko" ? "난이도 중" : "Medium"}
+          >
+            <span
+              className={`diffBar__circle ${
+                difficulty === "mid" ? "diffBar__circle--mid filled" : "diffBar__circle--mid"
+              }`}
+            />
+          </button>
 
-        <button
-          type="button"
-          className="diffBar__circleBtn"
-          onClick={() => onChangeDifficulty("mid")}
-          aria-label={lang === "ko" ? "난이도 중" : "Medium"}
-        >
-          <span
-            className={`diffBar__circle ${
-              difficulty === "mid" ? "diffBar__circle--mid filled" : "diffBar__circle--mid"
-            }`}
-          />
-        </button>
-
-        <button
-          type="button"
-          className="diffBar__circleBtn"
-          onClick={() => onChangeDifficulty("low")}
-          aria-label={lang === "ko" ? "난이도 하" : "Easy"}
-        >
-          <span
-            className={`diffBar__circle ${
-              difficulty === "low" ? "diffBar__circle--low filled" : "diffBar__circle--low"
-            }`}
-          />
-        </button>
+          <button
+            type="button"
+            className="diffBar__circleBtn"
+            onClick={() => onChangeDifficulty("low")}
+            aria-label={lang === "ko" ? "난이도 하" : "Easy"}
+          >
+            <span
+              className={`diffBar__circle ${
+                difficulty === "low" ? "diffBar__circle--low filled" : "diffBar__circle--low"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       <div className="quiz__prompt">{prompt}</div>
 
       <div className="quiz__choices">
-        {choices.map((text, i) => {
+        {displayOptions.map((option) => {
           const isPicked =
             (state.kind === "correct" || state.kind === "wrong") &&
-            state.pickedIndex === i;
+            state.pickedOptionId === option.id;
 
           const isCorrectPicked = state.kind === "correct" && isPicked;
           const isWrongPicked = state.kind === "wrong" && isPicked;
 
           return (
             <button
-              key={`${q.id}-${i}`}
+              key={option.id}
               type="button"
               className={[
                 "choice",
                 isCorrectPicked ? "isCorrect" : "",
                 isWrongPicked ? "isWrong" : "",
               ].join(" ")}
-              onClick={() => pick(i)}
+              onClick={() => pick(option.id)}
+              disabled={state.kind !== "idle"}
             >
-              <span className="choice__text">{text}</span>
+              <span className="choice__text">{option.label}</span>
 
               {isCorrectPicked ? <span className="choice__markO">O</span> : null}
               {isWrongPicked ? <span className="choice__markX">X</span> : null}
@@ -160,24 +208,30 @@ export default function QuizPage({
         })}
       </div>
 
-      {/* 오답일 때만 다음 문제 버튼 표시 */}
-      {state.kind === "wrong" ? (
-        <div className={`quiz__actions ${showExplain ? 'with-explanation' : ''}`}>
+      {/* Next Question 버튼 영역 (placeholder로 공간 확보) */}
+      <div className={`quiz__actions ${showExplain ? 'with-explanation' : ''} ${state.kind === "wrong" ? 'visible' : 'placeholder'}`}>
+        {state.kind === "wrong" ? (
           <button type="button" className="act actNext" onClick={onNext}>
             {lang === "ko" ? "다음 문제" : "Next Question"}
           </button>
-        </div>
-      ) : null}
+        ) : (
+          <div className="quiz__actions-placeholder"></div>
+        )}
+      </div>
 
-      {/* 상세 설명 영역 (인라인) */}
-      {showExplain && (state.kind === "correct" || state.kind === "wrong") ? (
-        <div className="quiz__explanation">
-          <div className="quiz__explanation-title">
-            {lang === "ko" ? "상세 설명" : "Explanation"}
+      {/* 상세 설명 영역 (placeholder로 공간 확보) */}
+      <div className={`quiz__explanation-wrapper ${showExplain && (state.kind === "correct" || state.kind === "wrong") ? 'visible' : 'placeholder'}`}>
+        {showExplain && (state.kind === "correct" || state.kind === "wrong") ? (
+          <div className="quiz__explanation">
+            <div className="quiz__explanation-title">
+              {lang === "ko" ? "상세 설명" : "Explanation"}
+            </div>
+            <div className="quiz__explanation-text">{explainText}</div>
           </div>
-          <div className="quiz__explanation-text">{explainText}</div>
-        </div>
-      ) : null}
+        ) : (
+          <div className="quiz__explanation-placeholder"></div>
+        )}
+      </div>
     </div>
   );
 }

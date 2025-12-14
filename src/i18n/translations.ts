@@ -52,7 +52,7 @@ type TranslationKey =
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   ko: {
-    'app.title': '도시 맞추기 퀴즈',
+    'app.title': '도시 맞추기',
     'app.subtitle': '도시퀴즈',
     'button.startQuiz': '퀴즈 시작하기',
     'button.selectDifficulty': '난이도 선택 후 시작',

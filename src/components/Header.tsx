@@ -3,7 +3,7 @@ import './Header.css';
 import { useI18n } from '../contexts/I18nContext';
 
 type HeaderProps = {
-  currentPage: 'home' | 'quiz' | 'stats';
+  currentPage: 'home' | 'quiz' | 'stats' | 'splash';
   onNavigate: (page: 'home' | 'quiz' | 'stats') => void;
 };
 
@@ -18,7 +18,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
   return (
     <header className="header-bar">
-      <div className="header-title">도시 퀴즈</div>
+      <div className="header-title">{t('app.title')}</div>
       
       <div className="header-nav">
         <button
@@ -45,9 +45,9 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         <button 
           className={`lang-btn ${language === 'ko' ? 'active' : ''}`}
           onClick={() => handleChangeLanguage('ko')}
-          aria-label="한국어"
+          aria-label={language === 'ko' ? '한국어' : 'Korean'}
         >
-          한국어
+          {language === 'ko' ? '한국어' : 'Korean'}
         </button>
         <span className="lang-sep">|</span>
         <button 

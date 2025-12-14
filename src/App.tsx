@@ -9,104 +9,83 @@ import { Difficulty, Question } from './types';
 import { getIsDeveloper, setIsDeveloper } from './utils/storage';
 import { questions as oldQuestions } from './data/questions';
 import { Question as OldQuestion } from './types/question';
+import { getCityName } from './utils/cityNameMap';
 import './styles/App.css';
 
 type Page = 'home' | 'quiz' | 'stats';
 
-// 도시 이름 한글-영어 매핑
-const cityNameMap: Record<string, string> = {
-  '시카고': 'Chicago',
-  '토론토': 'Toronto',
-  '뉴욕': 'New York',
-  '밴쿠버': 'Vancouver',
-  '로스앤젤레스': 'Los Angeles',
-  '멕시코시티': 'Mexico City',
-  '서울': 'Seoul',
-  '부산': 'Busan',
-  '도쿄': 'Tokyo',
-  '오사카': 'Osaka',
-  '베이징': 'Beijing',
-  '상하이': 'Shanghai',
-  '방콕': 'Bangkok',
-  '싱가포르': 'Singapore',
-  '파리': 'Paris',
-  '런던': 'London',
-  '베를린': 'Berlin',
-  '로마': 'Rome',
-  '마드리드': 'Madrid',
-  '암스테르담': 'Amsterdam',
-  '모스크바': 'Moscow',
-  '시드니': 'Sydney',
-  '멜버른': 'Melbourne',
-  '리우데자네이루': 'Rio de Janeiro',
-  '상파울루': 'São Paulo',
-  '부에노스아이레스': 'Buenos Aires',
-  '카이로': 'Cairo',
-  '요하네스버그': 'Johannesburg',
-  '두바이': 'Dubai',
-  '델리': 'Delhi',
-  '뭄바이': 'Mumbai',
-  '방갈로르': 'Bangalore',
-  '마닐라': 'Manila',
-  '자카르타': 'Jakarta',
-  '호치민': 'Ho Chi Minh City',
-  '하노이': 'Hanoi',
-  '쿠알라룸푸르': 'Kuala Lumpur',
-  '타이페이': 'Taipei',
-  '홍콩': 'Hong Kong',
-  '마카오': 'Macau',
-  '오타와': 'Ottawa',
-  '호놀룰루': 'Honolulu',
-  '몬트리올': 'Montreal',
-  '보스턴': 'Boston',
-  '마이애미': 'Miami',
-  '에드몬턴': 'Edmonton',
-  '시애틀': 'Seattle',
-  '워싱턴 D.C.': 'Washington D.C.',
-  '브라질리아': 'Brasília',
-  '덴버': 'Denver',
-  '필라델피아': 'Philadelphia',
-  '퀸즈타운': 'Queenstown',
-  '애틀랜타': 'Atlanta',
-  '피닉스': 'Phoenix',
-  '칸쿤': 'Cancún',
-  '샌디에이고': 'San Diego',
-  '미니애폴리스': 'Minneapolis',
-  '로테르담': 'Rotterdam',
-  '샌안토니오': 'San Antonio',
-  '포트랜드': 'Portland',
-  '케이프타운': 'Cape Town',
-  '투손': 'Tucson',
-  '쿠리티바': 'Curitiba',
-  '리노': 'Reno',
-  '바르나': 'Varna',
-  '샬럿': 'Charlotte',
-  '코펜하겐': 'Copenhagen',
-};
-
 // 질문 데이터 변환
 function convertQuestions(oldQs: OldQuestion[]): Question[] {
-  return oldQs.map((q: OldQuestion) => {
-    // 영어 옵션 생성
-    const choicesEn = q.options.map(opt => cityNameMap[opt] || opt);
+  // 모든 도시 수집 (중복 제거)
+  const allCities = new Set<string>();
+  oldQs.forEach(q => {
+    q.options.forEach(opt => allCities.add(opt));
+  });
+  const cityList = Array.from(allCities);
+
+  const converted: Question[] = [];
+  
+  for (const q of oldQs) {
+    const correctCity = q.options[q.correctIndex];
+    const wrongCity = q.options[1 - q.correctIndex];
     
-    return {
+    // 오답 도시 후보 (정답과 기존 오답 제외)
+    const wrongCandidates = cityList.filter(
+      city => city !== correctCity && city !== wrongCity
+    );
+    
+    // 오답이 부족하면 건너뛰기
+    if (wrongCandidates.length < 1) {
+      continue;
+    }
+    
+    // 오답 2개 선택 (기존 오답 + 랜덤 오답 1개)
+    const secondWrongCity = wrongCandidates[Math.floor(Math.random() * wrongCandidates.length)];
+    const wrongCities = [wrongCity, secondWrongCity];
+    
+    // 옵션 생성: 정답 1개 + 오답 2개 (한글/영어 모두 저장)
+    const options: Array<{ id: string; labelKo: string; labelEn: string }> = [
+      { id: `${q.id}-option-0`, labelKo: correctCity, labelEn: getCityName(correctCity, 'en') },
+      { id: `${q.id}-option-1`, labelKo: wrongCities[0], labelEn: getCityName(wrongCities[0], 'en') },
+      { id: `${q.id}-option-2`, labelKo: wrongCities[1], labelEn: getCityName(wrongCities[1], 'en') },
+    ];
+    
+    // 정답 옵션 ID
+    const correctOptionId = `${q.id}-option-0`;
+    
+    // 안전장치 검사
+    if (options.length !== 3) {
+      continue;
+    }
+    
+    const optionIds = options.map(opt => opt.id);
+    if (new Set(optionIds).size !== 3) {
+      continue; // ID 중복
+    }
+    
+    if (options.filter(opt => opt.id === correctOptionId).length !== 1) {
+      continue; // correctOptionId가 options에 정확히 1개 존재하지 않음
+    }
+    
+    converted.push({
       id: String(q.id),
       topic: 'general' as const,
       promptKo: q.questionText.ko,
       promptEn: q.questionText.en,
-      choicesKo: q.options,
-      choicesEn: choicesEn,
-      correctIndex: q.correctIndex,
+      options: options.map(opt => ({ id: opt.id, label: opt.labelKo })), // 기본은 한글
+      optionsEn: options.map(opt => ({ id: opt.id, label: opt.labelEn })), // 영어 버전
+      correctOptionId,
       explanationKo: q.explanation.ko,
       explanationEn: q.explanation.en,
-    };
-  });
+    });
+  }
+  
+  return converted;
 }
 
 function AppContent() {
   const { language } = useI18n();
-  const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [currentPage, setCurrentPage] = useState<Page | 'splash'>('splash');
   const [quizDifficulty, setQuizDifficulty] = useState<Difficulty>('low');
 
   useEffect(() => {
@@ -116,6 +95,16 @@ function AppContent() {
       console.log('개발자 모드가 자동으로 활성화되었습니다. 모든 난이도와 해설에 접근할 수 있습니다.');
     }
   }, []);
+
+  // 로고 화면 자동 전환
+  useEffect(() => {
+    if (currentPage === 'splash') {
+      const timer = setTimeout(() => {
+        setCurrentPage('home');
+      }, 1000); // 1초 후 자동 전환
+      return () => clearTimeout(timer);
+    }
+  }, [currentPage]);
 
   // 질문 데이터 변환
   const allQuestions = useMemo(() => convertQuestions(oldQuestions), []);
@@ -155,6 +144,20 @@ function AppContent() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'splash':
+        return (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            color: '#667eea'
+          }}>
+            CITY QUIZ
+          </div>
+        );
       case 'home':
         return (
           <HomePage
@@ -189,9 +192,13 @@ function AppContent() {
 
   return (
     <div className="app">
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+      {currentPage !== 'splash' && (
+        <>
+          <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+          <Footer />
+        </>
+      )}
       <main className="app-main">{renderPage()}</main>
-      <Footer />
     </div>
   );
 }

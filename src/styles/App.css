@@ -79,6 +79,9 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
+  height: calc(100vh - 56px);
+  position: relative;
 }
 
 /* 스크롤바 스타일링 */

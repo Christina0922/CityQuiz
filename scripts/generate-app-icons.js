@@ -1,13 +1,13 @@
 /**
- * 앱 아이콘 생성 스크립트
+ * App Icon Generator Script
  * 
- * 사용법:
- * 1. 원본 아이콘 이미지를 'assets/icon-original.png' (1024x1024px 권장)에 저장
- * 2. npm run generate-icons 실행
+ * Usage:
+ * 1. Place original icon image at 'assets/icon-original.png' (1024x1024px recommended)
+ * 2. Run: npm run generate-icons
  * 
- * 생성되는 파일:
+ * Generated files:
  * - Google Play Console: assets/icon-512.png (512x512px)
- * - Android mipmap 세트: app/src/main/res/mipmap-*/ic_launcher.png
+ * - Android mipmap set: app/src/main/res/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/ic_launcher.png
  */
 
 const sharp = require('sharp');
@@ -43,9 +43,9 @@ async function generateIcon(inputPath, outputPath, size) {
       })
       .png()
       .toFile(outputPath);
-    console.log(`✓ 생성 완료: ${outputPath} (${size}x${size}px)`);
+    console.log(`✓ Generated: ${outputPath} (${size}x${size}px)`);
   } catch (error) {
-    console.error(`✗ 생성 실패: ${outputPath}`, error.message);
+    console.error(`✗ Failed: ${outputPath}`, error.message);
     throw error;
   }
 }
@@ -53,40 +53,40 @@ async function generateIcon(inputPath, outputPath, size) {
 async function ensureDirectory(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
-    console.log(`📁 폴더 생성: ${dir}`);
+    console.log(`📁 Created directory: ${dir}`);
   }
 }
 
 async function main() {
   const originalIcon = path.join(__dirname, '../assets/icon-original.png');
   
-  // 원본 파일 확인
+  // Check if original file exists
   if (!fs.existsSync(originalIcon)) {
-    console.error('❌ 오류: 원본 아이콘을 찾을 수 없습니다.');
-    console.error(`   경로: ${originalIcon}`);
-    console.error('\n📋 사용 방법:');
-    console.error('   1. 원본 아이콘 이미지를 assets/icon-original.png에 저장하세요');
-    console.error('   2. 권장 크기: 1024x1024px 이상 (PNG, 투명 배경)');
-    console.error('   3. npm run generate-icons 실행');
+    console.error('❌ Error: Original icon not found.');
+    console.error(`   Path: ${originalIcon}`);
+    console.error('\n📋 Usage:');
+    console.error('   1. Place original icon image at assets/icon-original.png');
+    console.error('   2. Recommended size: 1024x1024px or larger (PNG, transparent background)');
+    console.error('   3. Run: npm run generate-icons');
     process.exit(1);
   }
 
-  console.log('🎨 앱 아이콘 생성 시작...\n');
-  console.log(`📂 원본 파일: ${originalIcon}\n`);
+  console.log('🎨 Starting app icon generation...\n');
+  console.log(`📂 Original file: ${originalIcon}\n`);
 
-  // assets 폴더 확인
+  // Check assets directory
   const assetsDir = path.join(__dirname, '../assets');
   if (!fs.existsSync(assetsDir)) {
     fs.mkdirSync(assetsDir, { recursive: true });
   }
 
-  // 1. Google Play Console 아이콘 (512x512)
+  // 1. Google Play Console icon (512x512)
   const playStoreIcon = path.join(assetsDir, 'icon-512.png');
   await generateIcon(originalIcon, playStoreIcon, ICON_SIZES['play-store']);
-  console.log(`   → Google Play Console용: ${playStoreIcon}\n`);
+  console.log(`   → Google Play Console: ${playStoreIcon}\n`);
 
-  // 2. Android mipmap 아이콘들
-  console.log('📱 Android mipmap 아이콘 생성 중...\n');
+  // 2. Android mipmap icons
+  console.log('📱 Generating Android mipmap icons...\n');
   
   for (const [density, size] of Object.entries(ICON_SIZES)) {
     if (density === 'play-store') continue;
@@ -101,21 +101,21 @@ async function main() {
     await generateIcon(originalIcon, iconRoundPath, size);
   }
 
-  console.log('\n✅ 모든 아이콘 생성 완료!\n');
-  console.log('📋 생성된 파일:');
+  console.log('\n✅ All icons generated successfully!\n');
+  console.log('📋 Generated files:');
   console.log(`   - Google Play Console: assets/icon-512.png (512x512px)`);
   console.log(`   - Android mipmap-mdpi: ${MIPMAP_FOLDERS['mdpi']}/ic_launcher.png (48x48px)`);
   console.log(`   - Android mipmap-hdpi: ${MIPMAP_FOLDERS['hdpi']}/ic_launcher.png (72x72px)`);
   console.log(`   - Android mipmap-xhdpi: ${MIPMAP_FOLDERS['xhdpi']}/ic_launcher.png (96x96px)`);
   console.log(`   - Android mipmap-xxhdpi: ${MIPMAP_FOLDERS['xxhdpi']}/ic_launcher.png (144x144px)`);
   console.log(`   - Android mipmap-xxxhdpi: ${MIPMAP_FOLDERS['xxxhdpi']}/ic_launcher.png (192x192px)`);
-  console.log('\n💡 다음 단계:');
-  console.log('   1. Android Studio에서 앱을 다시 빌드하세요');
-  console.log('   2. Google Play Console에 assets/icon-512.png를 업로드하세요');
+  console.log('\n💡 Next steps:');
+  console.log('   1. Rebuild the app in Android Studio');
+  console.log('   2. Upload assets/icon-512.png to Google Play Console');
 }
 
 main().catch(error => {
-  console.error('❌ 오류 발생:', error);
+  console.error('❌ Error occurred:', error);
   process.exit(1);
 });
 

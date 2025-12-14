@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "build:android": "npm run build && npm run copy:android",
     "copy:android": "node scripts/copy-to-android.js",
-    "generate-icons": "node scripts/generate-app-icons.js"
+    "generate-icons": "node scripts/generate-app-icons.js",
+    "gen:android-icons": "node scripts/generate_android_icons.js"
   },
   "dependencies": {
     "react": "^18.2.0",

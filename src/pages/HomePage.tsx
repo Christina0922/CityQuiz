@@ -40,7 +40,7 @@ export default function HomePage({
       </button>
 
       {/* 난이도 값은 내부 상태로 유지 중 */}
-      <span className="srOnly">현재난이도:{difficulty}</span>
+      <span className="srOnly">{lang === "ko" ? `현재난이도:${difficulty}` : `Current difficulty:${difficulty}`}</span>
     </div>
   );
 }

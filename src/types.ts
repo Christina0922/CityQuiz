@@ -20,9 +20,9 @@ export type Question = {
   topic: CoupangTopic;
   promptKo: string;
   promptEn: string;
-  choicesKo: string[];
-  choicesEn: string[];
-  correctIndex: number;
+  options: Array<{ id: string; label: string }>;
+  optionsEn: Array<{ id: string; label: string }>;
+  correctOptionId: string;
   explanationKo: string;
   explanationEn: string;
 };
