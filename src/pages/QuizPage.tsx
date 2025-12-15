@@ -1,6 +1,8 @@
 // src/pages/QuizPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import { Difficulty, Language, Question } from "../types";
+import { useStats } from "../hooks/useStats";
+import type { Difficulty as StatsDifficulty } from "../utils/stats";
 import "./QuizPage.css";
 
 type Props = {
@@ -25,6 +27,13 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
+// 난이도 매핑: QuizPage의 Difficulty -> Stats의 Difficulty
+function mapDifficultyToStats(difficulty: Difficulty): StatsDifficulty {
+  if (difficulty === "high") return "hard";
+  if (difficulty === "mid") return "medium";
+  return "easy";
+}
+
 export default function QuizPage({
   lang,
   difficulty,
@@ -34,6 +43,8 @@ export default function QuizPage({
   const [idx, setIdx] = useState(0);
   const [state, setState] = useState<AnswerState>({ kind: "idle" });
   const [showExplain, setShowExplain] = useState(false);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const { record } = useStats();
 
   // 현재 난이도에 해당하는 문제 풀
   const currentQuestions = useMemo(() => {
@@ -67,12 +78,14 @@ export default function QuizPage({
     setIdx(0);
     setState({ kind: "idle" });
     setShowExplain(false);
+    setIsAnswered(false);
   }, [difficulty]);
 
   useEffect(() => {
     if (currentQ) {
       setState({ kind: "idle" });
       setShowExplain(false);
+      setIsAnswered(false);
     } else {
       // 안전장치 실패 시 다음 문제로
       setIdx((v) => v + 1);
@@ -110,10 +123,14 @@ export default function QuizPage({
   }, [shuffledOptions, lang, currentQ.options, currentQ.optionsEn]);
 
   const pick = (selectedOptionId: string) => {
-    if (state.kind !== "idle") return;
+    if (state.kind !== "idle" || isAnswered) return;
 
     // id 기반 채점
-    if (selectedOptionId === currentQ.correctOptionId) {
+    const isCorrect = selectedOptionId === currentQ.correctOptionId;
+    
+    setIsAnswered(true);
+    
+    if (isCorrect) {
       setState({ kind: "correct", pickedOptionId: selectedOptionId });
       setShowExplain(true);
       window.setTimeout(() => {
@@ -123,6 +140,10 @@ export default function QuizPage({
       setState({ kind: "wrong", pickedOptionId: selectedOptionId });
       setShowExplain(true);
     }
+    
+    // 통계 기록 (1번만)
+    const statsDifficulty = mapDifficultyToStats(difficulty);
+    record(statsDifficulty, isCorrect);
   };
 
   const onNext = () => {

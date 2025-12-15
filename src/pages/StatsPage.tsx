@@ -1,21 +1,21 @@
 import React from 'react';
 import { useI18n } from '../contexts/I18nContext';
-import { getStats, getDailyLimit, getIsPremium } from '../utils/storage';
+import { getIsPremium } from '../utils/storage';
+import { useStats } from '../hooks/useStats';
 import './StatsPage.css';
 
 export const StatsPage: React.FC = () => {
   const { t } = useI18n();
-  const stats = getStats();
-  const dailyLimit = getDailyLimit();
+  const { stats } = useStats();
   const isPremium = getIsPremium();
 
   const accuracy =
-    stats.totalAnswered > 0
-      ? ((stats.totalCorrect / stats.totalAnswered) * 100).toFixed(1)
-      : '0.0';
+    stats.totalAnswered === 0
+      ? 0
+      : (stats.totalCorrect / stats.totalAnswered) * 100;
 
   const getDifficultyAccuracy = (answered: number, correct: number) => {
-    return answered > 0 ? ((correct / answered) * 100).toFixed(1) : '0.0';
+    return answered === 0 ? 0 : (correct / answered) * 100;
   };
 
   return (
@@ -36,13 +36,13 @@ export const StatsPage: React.FC = () => {
 
           <div className="stat-card highlight">
             <div className="stat-label">{t('stats.accuracy')}</div>
-            <div className="stat-value">{accuracy}%</div>
+            <div className="stat-value">{accuracy.toFixed(1)}%</div>
           </div>
 
           <div className="stat-card">
             <div className="stat-label">{t('stats.todayAnswered')}</div>
             <div className="stat-value">
-              {dailyLimit.answeredToday}
+              {stats.todayAnswered}
               {!isPremium && ` / 20`}
             </div>
           </div>
@@ -63,7 +63,7 @@ export const StatsPage: React.FC = () => {
               {getDifficultyAccuracy(
                 stats.byDifficulty.easy.answered,
                 stats.byDifficulty.easy.correct
-              )}
+              ).toFixed(1)}
               %
             </div>
           </div>
@@ -80,7 +80,7 @@ export const StatsPage: React.FC = () => {
               {getDifficultyAccuracy(
                 stats.byDifficulty.medium.answered,
                 stats.byDifficulty.medium.correct
-              )}
+              ).toFixed(1)}
               %
             </div>
           </div>
@@ -97,7 +97,7 @@ export const StatsPage: React.FC = () => {
               {getDifficultyAccuracy(
                 stats.byDifficulty.hard.answered,
                 stats.byDifficulty.hard.correct
-              )}
+              ).toFixed(1)}
               %
             </div>
           </div>

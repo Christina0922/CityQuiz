@@ -1,16 +1,28 @@
-export type Difficulty = "상" | "중" | "하";
+export type Difficulty = "easy" | "medium" | "hard";
 
 export type Stats = {
-  totalSolved: number;
-  totalCorrect: number;
-  todaySolved: number;
-  todayDate: string; // YYYY-MM-DD
-  byDifficulty: Record<Difficulty, { solved: number; correct: number }>;
+  totalAnswered: number;     // 전체 푼 문제(정답/오답 포함)
+  totalCorrect: number;      // 정답 개수
+  todayAnswered: number;     // 오늘 푼 문제(정답/오답 포함)
+  lastPlayedDate: string;    // "YYYY-MM-DD"
+  byDifficulty: Record<Difficulty, { answered: number; correct: number }>;
 };
 
-const KEY = "cityquiz_stats_v1";
+const STORAGE_KEY = "cityquiz_stats_v1";
 
-function todayStr() {
+const defaultStats: Stats = {
+  totalAnswered: 0,
+  totalCorrect: 0,
+  todayAnswered: 0,
+  lastPlayedDate: "",
+  byDifficulty: {
+    easy: { answered: 0, correct: 0 },
+    medium: { answered: 0, correct: 0 },
+    hard: { answered: 0, correct: 0 },
+  },
+};
+
+function getTodayDate(): string {
   const d = new Date();
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -18,64 +30,81 @@ function todayStr() {
   return `${y}-${m}-${day}`;
 }
 
-export function defaultStats(): Stats {
-  return {
-    totalSolved: 0,
-    totalCorrect: 0,
-    todaySolved: 0,
-    todayDate: todayStr(),
-    byDifficulty: {
-      하: { solved: 0, correct: 0 },
-      중: { solved: 0, correct: 0 },
-      상: { solved: 0, correct: 0 },
-    },
-  };
-}
-
 export function loadStats(): Stats {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return defaultStats();
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return defaultStats;
+    }
     const parsed = JSON.parse(raw) as Stats;
-
-    // ✅ 1차 방어: 구조가 깨졌으면 초기화
-    if (!parsed?.byDifficulty?.하 || !parsed?.byDifficulty?.중 || !parsed?.byDifficulty?.상) {
-      return defaultStats();
+    
+    // 구조 검증
+    if (
+      typeof parsed.totalAnswered !== "number" ||
+      typeof parsed.totalCorrect !== "number" ||
+      typeof parsed.todayAnswered !== "number" ||
+      typeof parsed.lastPlayedDate !== "string" ||
+      !parsed.byDifficulty ||
+      !parsed.byDifficulty.easy ||
+      !parsed.byDifficulty.medium ||
+      !parsed.byDifficulty.hard
+    ) {
+      return defaultStats;
     }
-
-    // ✅ 2차 방어: 날짜 바뀌면 todaySolved만 리셋
-    const t = todayStr();
-    if (parsed.todayDate !== t) {
-      parsed.todayDate = t;
-      parsed.todaySolved = 0;
-    }
-
+    
     return parsed;
   } catch {
-    return defaultStats();
+    return defaultStats;
   }
 }
 
-export function saveStats(stats: Stats) {
-  localStorage.setItem(KEY, JSON.stringify(stats));
-}
-
-export function recordSolved(params: { difficulty: Difficulty; isCorrect: boolean }) {
-  const stats = loadStats();
-
-  stats.totalSolved += 1;
-  stats.todaySolved += 1;
-  stats.byDifficulty[params.difficulty].solved += 1;
-
-  if (params.isCorrect) {
-    stats.totalCorrect += 1;
-    stats.byDifficulty[params.difficulty].correct += 1;
+export function saveStats(stats: Stats): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+  } catch (error) {
+    console.warn("Failed to save stats:", error);
   }
-
-  saveStats(stats);
 }
 
-export function accuracy(totalCorrect: number, totalSolved: number) {
-  if (totalSolved <= 0) return 0;
-  return Math.round((totalCorrect / totalSolved) * 1000) / 10; // 소수 1자리
+export function applyTodayReset(stats: Stats): Stats {
+  const today = getTodayDate();
+  
+  // 날짜가 바뀌었으면 오늘 푼 문제 리셋
+  if (stats.lastPlayedDate !== today) {
+    return {
+      ...stats,
+      todayAnswered: 0,
+      lastPlayedDate: today,
+    };
+  }
+  
+  return stats;
+}
+
+export function recordAnswer(stats: Stats, difficulty: Difficulty, isCorrect: boolean): Stats {
+  const today = getTodayDate();
+  
+  // 날짜가 바뀌었으면 오늘 푼 문제 리셋
+  const updatedStats = applyTodayReset(stats);
+  
+  // 통계 업데이트
+  const newStats: Stats = {
+    ...updatedStats,
+    totalAnswered: updatedStats.totalAnswered + 1,
+    todayAnswered: updatedStats.todayAnswered + 1,
+    lastPlayedDate: today,
+    byDifficulty: {
+      ...updatedStats.byDifficulty,
+      [difficulty]: {
+        answered: updatedStats.byDifficulty[difficulty].answered + 1,
+        correct: updatedStats.byDifficulty[difficulty].correct + (isCorrect ? 1 : 0),
+      },
+    },
+  };
+  
+  if (isCorrect) {
+    newStats.totalCorrect = updatedStats.totalCorrect + 1;
+  }
+  
+  return newStats;
 }
