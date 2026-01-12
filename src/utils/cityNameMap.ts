@@ -127,6 +127,15 @@ export const cityNameMap: Record<string, string> = {
   '인천': 'Incheon',
   '후쿠오카': 'Fukuoka',
   '청두': 'Chengdu',
+  '밀라노': 'Milan',
+  '리스본': 'Lisbon',
+  '리마': 'Lima',
+  '타이베이': 'Taipei',
+  '오슬로': 'Oslo',
+  '비즈마크': 'Bismarck',
+  '체이니': 'Cheyenne',
+  '컬럼비아': 'Columbia',
+  '디모인': 'Des Moines',
 };
 
 // 도시명을 언어에 따라 변환
@@ -134,6 +143,12 @@ export function getCityName(cityKo: string, language: 'ko' | 'en'): string {
   if (language === 'ko') {
     return cityKo;
   }
-  return cityNameMap[cityKo] || cityKo;
+  const englishName = cityNameMap[cityKo];
+  if (!englishName) {
+    // 매핑이 없으면 경고 로그 출력
+    // 개발 시 누락된 도시명을 확인할 수 있도록 함
+    console.warn(`City name mapping not found for: "${cityKo}". Please add it to cityNameMap.`);
+  }
+  return englishName || cityKo;
 }
 

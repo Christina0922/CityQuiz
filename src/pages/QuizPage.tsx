@@ -81,6 +81,13 @@ export default function QuizPage({
     setIsAnswered(false);
   }, [difficulty]);
 
+  // 언어 변경 시 문제 인덱스 리셋 (같은 문제라도 언어가 바뀌면 다시 표시)
+  useEffect(() => {
+    setState({ kind: "idle" });
+    setShowExplain(false);
+    setIsAnswered(false);
+  }, [lang]);
+
   useEffect(() => {
     if (currentQ) {
       setState({ kind: "idle" });
@@ -107,20 +114,21 @@ export default function QuizPage({
   const explainText = lang === "ko" ? currentQ.explanationKo : currentQ.explanationEn;
   
   // 문제 출제 시점에 한 번만 셔플된 옵션 생성 (문제가 바뀔 때만 셔플, 답 체크 후에는 순서 절대 유지)
+  // 언어가 변경되면 해당 언어의 옵션으로 재셔플
+  // currentQ.id와 lang을 조합한 키를 사용하여 문제별, 언어별로 독립적인 셔플 보장
   const shuffledOptions = useMemo(() => {
+    if (!currentQ) return [];
     const baseOptions = lang === "ko" ? currentQ.options : currentQ.optionsEn;
-    return shuffleArray(baseOptions);
-  }, [currentQ.id]); // currentQ.id가 바뀔 때만 셔플 (lang 변경 시에는 순서 유지)
+    // 안전장치: baseOptions가 없거나 비어있으면 빈 배열 반환
+    if (!baseOptions || baseOptions.length === 0) {
+      console.warn(`No options found for question ${currentQ.id} in language ${lang}`);
+      return [];
+    }
+    return shuffleArray([...baseOptions]); // 새 배열로 복사하여 셔플
+  }, [currentQ?.id, lang, currentQ?.options, currentQ?.optionsEn]); // currentQ의 options도 dependency에 포함
   
-  // 언어에 따라 표시할 label 선택 (셔플된 순서는 유지)
-  const displayOptions = useMemo(() => {
-    return shuffledOptions.map(option => {
-      const baseOption = lang === "ko" 
-        ? currentQ.options.find(opt => opt.id === option.id)
-        : currentQ.optionsEn.find(opt => opt.id === option.id);
-      return baseOption || option;
-    });
-  }, [shuffledOptions, lang, currentQ.options, currentQ.optionsEn]);
+  // 셔플된 옵션을 그대로 사용 (이미 올바른 언어의 옵션)
+  const displayOptions = shuffledOptions;
 
   const pick = (selectedOptionId: string) => {
     if (state.kind !== "idle" || isAnswered) return;

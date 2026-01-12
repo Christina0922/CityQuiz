@@ -12,3 +12,9 @@ copy /Y "dist\index.html" "app\src\main\assets\dist\index.html"
 
 REM assets 폴더 전체 복사
 xcopy /Y /E /I "dist\assets" "app\src\main\assets\dist\assets"
+
+npm run build
+
+rmdir /S /Q "app\src\main\assets\dist"
+mkdir "app\src\main\assets\dist"
+xcopy /E /I /Y "dist\*" "app\src\main\assets\dist\"
