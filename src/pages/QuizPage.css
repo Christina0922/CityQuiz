@@ -9,6 +9,91 @@
   gap: 0.4vh;
 }
 
+/* XP/레벨 바 */
+.xpBar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+  padding: 0.6vh 1vw;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  flex-shrink: 0;
+}
+
+.xpBar__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: clamp(14px, 1.8vh, 16px);
+  font-weight: 700;
+}
+
+.xpBar__level {
+  color: #667eea;
+}
+
+.xpBar__xp {
+  color: #333;
+}
+
+.xpBar__progress {
+  width: 100%;
+  height: 1.2vh;
+  background: #e0e0e0;
+  border-radius: 0.6vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.xpBar__progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 0.6vh;
+  transition: width 0.3s ease;
+}
+
+/* 레벨업 토스트 */
+.levelUpToast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  animation: levelUpToastFadeIn 0.3s ease-out;
+}
+
+.levelUpToast__content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 1.5vh 3vw;
+  border-radius: 1.5vh;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  font-size: clamp(18px, 2.4vh, 22px);
+  font-weight: 900;
+}
+
+.levelUpToast__icon {
+  font-size: clamp(22px, 2.8vh, 26px);
+}
+
+.levelUpToast__text {
+  white-space: nowrap;
+}
+
+@keyframes levelUpToastFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 .diffBar {
   border: 2px solid #2f5ea6;
   display: flex;
@@ -263,6 +348,150 @@
   margin-bottom: 0;
 }
 
+/* 도시 카드 영역 */
+.quiz__cityCard {
+  flex-shrink: 0;
+  margin: 0.8vh 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cityCard {
+  width: 100%;
+  background: #fff;
+  border: 2px solid #667eea;
+  border-radius: 1.2vh;
+  padding: 1.2vh 1.5vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+.cityCard__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3vh;
+}
+
+.cityCard__name {
+  font-size: clamp(20px, 2.5vh, 24px);
+  font-weight: 900;
+  color: #333;
+  line-height: 1.2;
+}
+
+.cityCard__country {
+  font-size: clamp(14px, 1.8vh, 16px);
+  font-weight: 700;
+  color: #667eea;
+  line-height: 1.2;
+}
+
+.cityCard__blurb {
+  font-size: clamp(13px, 1.6vh, 15px);
+  font-weight: 500;
+  color: #555;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0.4vh 0;
+}
+
+.cityCard__mapButton {
+  width: 100%;
+  padding: 0.8vh 1.5vw;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 0.8vh;
+  font-size: clamp(15px, 1.9vh, 17px);
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.4vh;
+  transition: background 0.2s ease;
+}
+
+.cityCard__mapButton:hover {
+  background: #5568d3;
+}
+
+.cityCard__mapButton:active {
+  background: #4457c2;
+}
+
+.cityCard__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+  margin-top: 0.4vh;
+}
+
+.cityCard__adNote {
+  font-size: clamp(11px, 1.3vh, 13px);
+  color: #888;
+  text-align: center;
+  margin-top: 0.4vh;
+  font-weight: 400;
+}
+
+/* 힌트 영역 */
+.quiz__hintArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+  margin: 0.6vh 0;
+  flex-shrink: 0;
+}
+
+.quiz__hintButton {
+  width: 100%;
+  padding: 0.7vh 1.2vw;
+  background: #f59e0b;
+  color: #fff;
+  border: none;
+  border-radius: 0.8vh;
+  font-size: clamp(14px, 1.8vh, 16px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.quiz__hintButton:hover {
+  background: #d97706;
+}
+
+.quiz__hintButton:active {
+  background: #b45309;
+}
+
+.quiz__hintText {
+  padding: 0.8vh 1.2vw;
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  border-radius: 0.8vh;
+  font-size: clamp(14px, 1.7vh, 16px);
+  font-weight: 600;
+  color: #92400e;
+  text-align: center;
+  animation: hintFadeIn 0.3s ease-out;
+}
+
+@keyframes hintFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .quiz {
     gap: 0.3vh;
@@ -341,5 +570,47 @@
 
   .quiz__explanation-text {
     font-size: clamp(11px, 1.4vh, 13px);
+  }
+
+  .cityCard {
+    padding: 1vh 1.2vw;
+    gap: 0.6vh;
+  }
+
+  .cityCard__name {
+    font-size: clamp(18px, 2.2vh, 22px);
+  }
+
+  .cityCard__country {
+    font-size: clamp(13px, 1.6vh, 15px);
+  }
+
+  .cityCard__blurb {
+    font-size: clamp(12px, 1.5vh, 14px);
+    margin: 0.3vh 0;
+  }
+
+  .cityCard__mapButton {
+    padding: 0.7vh 1.2vw;
+    font-size: clamp(14px, 1.7vh, 16px);
+  }
+
+  .cityCard__adNote {
+    font-size: clamp(10px, 1.2vh, 12px);
+  }
+
+  .quiz__hintArea {
+    margin: 0.5vh 0;
+    gap: 0.5vh;
+  }
+
+  .quiz__hintButton {
+    padding: 0.6vh 1vw;
+    font-size: clamp(13px, 1.6vh, 15px);
+  }
+
+  .quiz__hintText {
+    padding: 0.7vh 1vw;
+    font-size: clamp(13px, 1.6vh, 15px);
   }
 }

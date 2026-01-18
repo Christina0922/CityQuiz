@@ -15,10 +15,10 @@ android {
 
         // ✅ 구글 플레이에 AAB 업데이트할 때마다 반드시 증가해야 합니다.
         // 예: 1 -> 2 -> 3 -> 4 ...
-        versionCode = 6
+        versionCode = 7
 
         // ✅ 사용자에게 보이는 버전 표기(권장: 같이 올리기)
-        versionName = "1.0.6"
+        versionName = "1.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -81,6 +81,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // AdMob (Google Mobile Ads SDK)
+    implementation("com.google.android.gms:play-services-ads:23.5.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

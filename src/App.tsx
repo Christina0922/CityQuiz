@@ -10,6 +10,7 @@ import { getIsDeveloper, setIsDeveloper } from './utils/storage';
 import { questions as oldQuestions } from './data/questions';
 import { Question as OldQuestion } from './types/question';
 import { getCityName } from './utils/cityNameMap';
+import { getCityData } from './data/cityData';
 import './styles/App.css';
 
 type Page = 'home' | 'quiz' | 'stats';
@@ -67,6 +68,9 @@ function convertQuestions(oldQs: OldQuestion[]): Question[] {
       continue; // correctOptionId가 options에 정확히 1개 존재하지 않음
     }
     
+    // 정답 도시의 cityData 가져오기
+    const cityData = getCityData(correctCity);
+    
     converted.push({
       id: String(q.id),
       topic: 'general' as const,
@@ -77,6 +81,7 @@ function convertQuestions(oldQs: OldQuestion[]): Question[] {
       correctOptionId,
       explanationKo: q.explanation.ko,
       explanationEn: q.explanation.en,
+      cityData: cityData || undefined, // cityData가 있으면 연결, 없으면 undefined
     });
   }
   

@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Difficulty, Language, Question } from "../types";
 import { useStats } from "../hooks/useStats";
 import type { Difficulty as StatsDifficulty } from "../utils/stats";
+import { getXP, addXP, getXPRequiredForLevel } from "../utils/storage";
+import { MapModal } from "../components/MapModal";
 import "./QuizPage.css";
 
 type Props = {
@@ -45,6 +47,16 @@ export default function QuizPage({
   const [showExplain, setShowExplain] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
   const { record } = useStats();
+  
+  // XP/레벨 상태
+  const [xpData, setXpData] = useState(getXP());
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  
+  // 지도 모달 상태
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  
+  // 힌트 상태
+  const [showHint, setShowHint] = useState(false);
 
   // 현재 난이도에 해당하는 문제 풀
   const currentQuestions = useMemo(() => {
@@ -93,6 +105,7 @@ export default function QuizPage({
       setState({ kind: "idle" });
       setShowExplain(false);
       setIsAnswered(false);
+      setShowHint(false); // 문제 변경 시 힌트 초기화
     } else {
       // 안전장치 실패 시 다음 문제로
       setIdx((v) => v + 1);
@@ -113,6 +126,50 @@ export default function QuizPage({
   const prompt = lang === "ko" ? currentQ.promptKo : currentQ.promptEn;
   const explainText = lang === "ko" ? currentQ.explanationKo : currentQ.explanationEn;
   
+  // 정답 도시 정보 (cityData가 있으면 사용)
+  const cityData = currentQ.cityData;
+
+  // window.onRewarded 콜백 등록 (보상형 광고 성공 시 호출)
+  // 컴포넌트 마운트 시 한 번만 등록하고, 내부에서 최신 상태를 참조하도록 함
+  useEffect(() => {
+    console.log('Registering window.onRewarded callback');
+    
+    // @ts-ignore - Android WebView에서 제공하는 콜백
+    const onRewardedCallback = (type: 'hint' | 'map') => {
+      console.log('window.onRewarded called with type:', type);
+      
+      if (type === 'hint') {
+        console.log('Setting showHint to true');
+        setShowHint(true);
+      } else if (type === 'map') {
+        console.log('Setting isMapModalOpen to true');
+        setIsMapModalOpen(true);
+      }
+    };
+    
+    // @ts-ignore
+    window.onRewarded = onRewardedCallback;
+
+    // 클린업
+    return () => {
+      // @ts-ignore
+      if (window.onRewarded === onRewardedCallback) {
+        console.log('Cleaning up window.onRewarded callback');
+        // @ts-ignore
+        delete window.onRewarded;
+      }
+    };
+  }, []); // 빈 dependency 배열 - 한 번만 등록
+  const cityName = cityData 
+    ? (lang === "ko" ? cityData.nameKo : cityData.nameEn)
+    : null;
+  const countryName = cityData
+    ? (lang === "ko" ? (cityData.countryKo || cityData.country) : cityData.country)
+    : null;
+  const cityBlurb = cityData
+    ? (lang === "ko" ? cityData.blurbKo : cityData.blurbEn)
+    : null;
+  
   // 문제 출제 시점에 한 번만 셔플된 옵션 생성 (문제가 바뀔 때만 셔플, 답 체크 후에는 순서 절대 유지)
   // 언어가 변경되면 해당 언어의 옵션으로 재셔플
   // currentQ.id와 lang을 조합한 키를 사용하여 문제별, 언어별로 독립적인 셔플 보장
@@ -130,6 +187,15 @@ export default function QuizPage({
   // 셔플된 옵션을 그대로 사용 (이미 올바른 언어의 옵션)
   const displayOptions = shuffledOptions;
 
+  // XP 진행률 계산
+  const currentLevelXP = getXPRequiredForLevel(xpData.level);
+  const nextLevelXP = getXPRequiredForLevel(xpData.level + 1);
+  const xpForCurrentLevel = xpData.xp - currentLevelXP;
+  const xpNeededForNextLevel = nextLevelXP - currentLevelXP;
+  const progressPercentage = xpNeededForNextLevel > 0 
+    ? Math.min(100, (xpForCurrentLevel / xpNeededForNextLevel) * 100)
+    : 100;
+
   const pick = (selectedOptionId: string) => {
     if (state.kind !== "idle" || isAnswered) return;
 
@@ -137,6 +203,19 @@ export default function QuizPage({
     const isCorrect = selectedOptionId === currentQ.correctOptionId;
     
     setIsAnswered(true);
+    
+    // XP 추가
+    const newXPData = addXP(isCorrect);
+    setXpData(newXPData);
+    
+    // 레벨업 체크
+    if (newXPData.leveledUp) {
+      setShowLevelUp(true);
+      // 레벨업 토스트 2초 후 자동 닫기
+      setTimeout(() => {
+        setShowLevelUp(false);
+      }, 2000);
+    }
     
     if (isCorrect) {
       setState({ kind: "correct", pickedOptionId: selectedOptionId });
@@ -158,8 +237,74 @@ export default function QuizPage({
     setIdx((v) => v + 1);
   };
 
+  // 보상형 광고 호출
+  const handleRequestRewardedAd = (type: 'hint' | 'map') => {
+    console.log('handleRequestRewardedAd called with type:', type);
+    
+    // @ts-ignore - Android WebView에서 제공하는 인터페이스
+    const androidInterface = (window as any).Android;
+    
+    if (androidInterface && typeof androidInterface.showRewardedAd === 'function') {
+      console.log('Calling Android.showRewardedAd:', type);
+      try {
+        androidInterface.showRewardedAd(type);
+      } catch (e) {
+        console.error('Error calling Android.showRewardedAd:', e);
+        // 에러 발생 시에도 보상 제공 (사용자 경험 개선)
+        if (type === 'hint') {
+          setShowHint(true);
+        } else if (type === 'map' && cityData) {
+          setIsMapModalOpen(true);
+        }
+      }
+    } else {
+      // Android WebView가 아닌 환경(브라우저)이거나 인터페이스가 로드되지 않은 경우
+      console.warn('Android interface not available, granting reward immediately (dev/fallback mode)');
+      if (type === 'hint') {
+        setShowHint(true);
+      } else if (type === 'map' && cityData) {
+        setIsMapModalOpen(true);
+      }
+    }
+  };
+
+  // 정답 나라의 첫 글자 힌트 생성
+  const hintText = useMemo(() => {
+    if (!cityData || !countryName) return null;
+    const firstLetter = countryName.charAt(0).toUpperCase();
+    return lang === 'ko' 
+      ? `정답 나라의 첫 글자: ${firstLetter}`
+      : `First letter of the country: ${firstLetter}`;
+  }, [cityData, countryName, lang]);
+
   return (
     <div className="quiz">
+      {/* XP/레벨 바 */}
+      <div className="xpBar">
+        <div className="xpBar__info">
+          <span className="xpBar__level">{lang === "ko" ? "레벨" : "Level"} {xpData.level}</span>
+          <span className="xpBar__xp">{xpData.xp} XP</span>
+        </div>
+        <div className="xpBar__progress">
+          <div 
+            className="xpBar__progressFill"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* 레벨업 토스트 */}
+      {showLevelUp && (
+        <div className="levelUpToast">
+          <div className="levelUpToast__content">
+            <span className="levelUpToast__icon">🎉</span>
+            <span className="levelUpToast__text">
+              {lang === "ko" ? `레벨 ${xpData.level} 달성!` : `Level ${xpData.level} Achieved!`}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* 난이도 바 */}
       <div className="diffBar">
         <div className="diffBar__label">{lang === "ko" ? "난이도" : "Difficulty"}</div>
@@ -207,6 +352,24 @@ export default function QuizPage({
 
       <div className="quiz__prompt">{prompt}</div>
 
+      {/* 힌트 버튼 (문제를 풀기 전에만 표시) */}
+      {state.kind === "idle" && cityData && (
+        <div className="quiz__hintArea">
+          <button
+            type="button"
+            className="quiz__hintButton"
+            onClick={() => handleRequestRewardedAd('hint')}
+          >
+            {lang === "ko" ? "힌트 보기 (광고 1회)" : "View Hint (1 ad)"}
+          </button>
+          {showHint && hintText && (
+            <div className="quiz__hintText">
+              {hintText}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="quiz__choices">
         {displayOptions.map((option) => {
           const isPicked =
@@ -237,6 +400,35 @@ export default function QuizPage({
         })}
       </div>
 
+      {/* 도시 카드 영역 (정답/오답 결과 화면에 표시) */}
+      {showExplain && (state.kind === "correct" || state.kind === "wrong") && cityData && (
+        <div className="quiz__cityCard">
+          <div className="cityCard">
+            <div className="cityCard__header">
+              <div className="cityCard__name">{cityName}</div>
+              {countryName && (
+                <div className="cityCard__country">{countryName}</div>
+              )}
+            </div>
+            {cityBlurb && (
+              <div className="cityCard__blurb">{cityBlurb}</div>
+            )}
+            <div className="cityCard__actions">
+              <button
+                type="button"
+                className="cityCard__mapButton"
+                onClick={() => handleRequestRewardedAd('map')}
+              >
+                {lang === "ko" ? "지도 보기 (광고 1회)" : "View Map (1 ad)"}
+              </button>
+            </div>
+            <div className="cityCard__adNote">
+              {lang === "ko" ? "광고 없이도 계속 플레이 가능" : "Continue playing without ads"}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Next Question 버튼 영역 (placeholder로 공간 확보) */}
       <div className={`quiz__actions ${showExplain ? 'with-explanation' : ''} ${state.kind === "wrong" ? 'visible' : 'placeholder'}`}>
         {state.kind === "wrong" ? (
@@ -261,6 +453,16 @@ export default function QuizPage({
           <div className="quiz__explanation-placeholder"></div>
         )}
       </div>
+
+      {/* 지도 모달 */}
+      {cityData && (
+        <MapModal
+          isOpen={isMapModalOpen}
+          onClose={() => setIsMapModalOpen(false)}
+          cityData={cityData}
+          lang={lang}
+        />
+      )}
     </div>
   );
 }

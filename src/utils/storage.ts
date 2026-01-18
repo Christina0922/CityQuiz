@@ -9,6 +9,8 @@ const STORAGE_KEYS = {
   IS_DEVELOPER: 'cityQuiz_isDeveloper',
   LAST_MESSAGE: 'cityQuiz_lastMessage',
   LAST_MESSAGE_TIME: 'cityQuiz_lastMessageTime',
+  XP: 'cityQuiz_xp',
+  LEVEL: 'cityQuiz_level',
 } as const;
 
 export interface Stats {
@@ -218,6 +220,112 @@ export function saveLastMessageTime(timestamp: number): void {
     localStorage.setItem(STORAGE_KEYS.LAST_MESSAGE_TIME, String(timestamp));
   } catch (error) {
     console.warn('Failed to save last message time:', error);
+  }
+}
+
+// XP/Level 관련
+export interface XPData {
+  xp: number;
+  level: number;
+}
+
+// 레벨업 필요 XP 계산: 레벨 1->2: 100 XP, 레벨 2->3: 150 XP, 레벨 3->4: 200 XP... (100 + (level-1)*50)
+export function getXPRequiredForLevel(level: number): number {
+  if (level <= 1) return 0;
+  return 100 + (level - 1) * 50;
+}
+
+// 현재 레벨에서 다음 레벨까지 필요한 XP 계산
+export function getXPRequiredForNextLevel(level: number): number {
+  return getXPRequiredForLevel(level + 1) - getXPRequiredForLevel(level);
+}
+
+// 누적 XP로 레벨 계산
+export function calculateLevelFromXP(totalXP: number): number {
+  let level = 1;
+  let requiredXP = getXPRequiredForLevel(2); // 레벨 2로 가기 위해 필요한 XP
+  
+  while (totalXP >= requiredXP) {
+    level++;
+    requiredXP = getXPRequiredForLevel(level + 1);
+  }
+  
+  return level;
+}
+
+export function getXP(): XPData {
+  try {
+    const storedXP = localStorage.getItem(STORAGE_KEYS.XP);
+    const storedLevel = localStorage.getItem(STORAGE_KEYS.LEVEL);
+    
+    let xp = 0;
+    let level = 1;
+    
+    if (storedXP !== null) {
+      xp = parseInt(storedXP, 10);
+      if (isNaN(xp)) xp = 0;
+    }
+    
+    // XP로 레벨 계산 (레벨이 저장되어 있어도 XP 기준으로 재계산)
+    level = calculateLevelFromXP(xp);
+    
+    // 저장된 레벨과 계산된 레벨이 다르면 XP 기준이 맞으므로 저장 업데이트
+    if (storedLevel !== null && parseInt(storedLevel, 10) !== level) {
+      saveLevel(level);
+    }
+    
+    return { xp, level };
+  } catch (error) {
+    console.warn('Failed to read XP:', error);
+    return { xp: 0, level: 1 };
+  }
+}
+
+export function saveXP(xp: number): void {
+  try {
+    const level = calculateLevelFromXP(xp);
+    localStorage.setItem(STORAGE_KEYS.XP, String(xp));
+    localStorage.setItem(STORAGE_KEYS.LEVEL, String(level));
+  } catch (error) {
+    console.warn('Failed to save XP:', error);
+  }
+}
+
+export function saveLevel(level: number): void {
+  try {
+    localStorage.setItem(STORAGE_KEYS.LEVEL, String(level));
+  } catch (error) {
+    console.warn('Failed to save level:', error);
+  }
+}
+
+// XP 추가 (정답 +10, 오답 +3)
+export function addXP(isCorrect: boolean): { xp: number; level: number; leveledUp: boolean } {
+  const currentData = getXP();
+  const oldLevel = currentData.level;
+  
+  const xpToAdd = isCorrect ? 10 : 3;
+  const newXP = currentData.xp + xpToAdd;
+  const newLevel = calculateLevelFromXP(newXP);
+  
+  saveXP(newXP);
+  
+  const leveledUp = newLevel > oldLevel;
+  
+  return {
+    xp: newXP,
+    level: newLevel,
+    leveledUp,
+  };
+}
+
+// XP 초기화
+export function resetXP(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.XP);
+    localStorage.removeItem(STORAGE_KEYS.LEVEL);
+  } catch (error) {
+    console.warn('Failed to reset XP:', error);
   }
 }
 
